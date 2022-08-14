@@ -1,4 +1,3 @@
-import "./App.css";
 import { LiteratureTime, LiteratureTimeResult } from "./LiteratureTime";
 import React, { useEffect } from "react";
 

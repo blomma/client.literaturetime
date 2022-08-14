@@ -1,0 +1,46 @@
+.LiteratureTime {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: auto;
+}
+
+#lit_quote {
+    font-size: 2.5vw;
+}
+
+#lit_quote em {
+    font-weight: 900;
+    color: rgb(19, 19, 19);
+    font-style: normal;
+}
+
+#main_text {
+    width: 60vw;
+    margin: auto;
+    color: dimgrey;
+    font-family: "Merriweather", Times, serif;
+}
+
+cite {
+    float: right;
+    padding-left: 10vw;
+    font-size: 2.3vw;
+}
+
+cite #book {
+    font-style: normal;
+}
+
+/* dark theme */
+body.dark {
+    background: #181a1b;
+}
+
+body.dark #lit_quote em {
+    color: rgb(220, 217, 212);
+}
+
+body.dark #main_text {
+    color: rgb(166, 158, 146);
+}
