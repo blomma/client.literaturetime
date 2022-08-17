@@ -25,11 +25,13 @@ function App() {
         const request: RequestInit = {
             method: "GET",
             headers: {
-                "Content-Type": "application/json",
+                Accept: "application/json",
             },
         };
 
-        var requestUrl = `https://localhost:6001/literaturetime/${Date.now()}`;
+        var offset = -new Date().getTimezoneOffset() * 60000;
+        var milliseconds = Date.now() + offset;
+        var requestUrl = `/literaturetime/${milliseconds}`;
         fetch(requestUrl, request)
             .then((response) => {
                 if (!response.ok) {
