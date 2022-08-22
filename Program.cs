@@ -1,7 +1,5 @@
-using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpClient();
@@ -14,18 +12,29 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.MapGet("/literaturetime/{milliseconds:long}", async ([FromServices] HttpClient httpClient, long milliseconds) =>
+var jsonOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+
+app.MapGet("/literaturetime/{hour}/{minute}", async ([FromServices] HttpClient httpClient, string hour, string minute) =>
 {
-    var url = $"http://192.168.1.11/literaturetime/{milliseconds}";
-    var response = await httpClient.GetStringAsync(url);
+    var httpRequestMessage = new HttpRequestMessage(
+            HttpMethod.Get,
+            $"http://192.168.1.11/api/1.0/literature/{hour}/{minute}")
+    { };
 
-    var options = new JsonSerializerOptions
+    var httpResponse = await httpClient.SendAsync(httpRequestMessage);
+    using var contentStream = await httpResponse.Content.ReadAsStreamAsync();
+
+    if (
+        !httpResponse.IsSuccessStatusCode &&
+        httpResponse.Content.Headers.ContentType?.MediaType == "application/problem+json"
+        )
     {
-        PropertyNameCaseInsensitive = true
-    };
-    var literaturetime = JsonSerializer.Deserialize<LiteratureTime>(response, options);
+        var problemDetails = await JsonSerializer.DeserializeAsync<ProblemDetailsWithStackTrace>(contentStream, jsonOptions);
+        return Results.Problem(problemDetails.Detail, problemDetails.Instance, problemDetails.Status, problemDetails.Title, problemDetails.Type);
+    }
 
-    return literaturetime;
+    var literaturetime = await JsonSerializer.DeserializeAsync<LiteratureTime>(contentStream, jsonOptions);
+    return Results.Ok(literaturetime);
 })
 .WithName("GetLiteratureTime");
 
@@ -36,6 +45,15 @@ app.UseRouting();
 app.MapFallbackToFile("index.html");
 
 app.Run();
+
+public record ProblemDetailsWithStackTrace(
+    string Type,
+    string Title,
+    int Status,
+    string Detail,
+    string Instance,
+    string StackTrace
+);
 
 public record LiteratureTime(
     string Time,
