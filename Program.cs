@@ -38,7 +38,7 @@ app.MapGet("/literaturetime/{hour}/{minute}", async ([FromServices] HttpClient h
 })
 .WithName("GetLiteratureTime");
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
