@@ -18,7 +18,7 @@ app.MapGet("/literaturetime/{hour}/{minute}", async ([FromServices] HttpClient h
 {
     var httpRequestMessage = new HttpRequestMessage(
             HttpMethod.Get,
-            $"http://192.168.1.11/api/1.0/literature/{hour}/{minute}")
+            $"http://api-literature.192.168.1.11.nip.io/api/1.0/literature/{hour}/{minute}")
     { };
 
     var httpResponse = await httpClient.SendAsync(httpRequestMessage);
