@@ -1,0 +1,59 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: client-literature
+
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: client-literature
+    spec:
+      containers:
+        - name: client-literature
+          image: ghcr.io/blomma/client.literature:main
+          ports:
+            - containerPort: 80
+          env:
+            - name: ASPNETCORE_URLS
+              value: http://*:80
+          imagePullPolicy: Always
+  selector:
+    matchLabels:
+      app: client-literature
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: client-literature
+
+spec:
+  ports:
+    - name: http
+      port: 80
+  selector:
+    app: client-literature
+
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: client-literature
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+
+spec:
+  rules:
+    - host: client-literature.192.168.1.11.nip.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: client-literature
+                port:
+                  number: 80
