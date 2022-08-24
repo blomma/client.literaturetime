@@ -1,18 +1,30 @@
+using Client.Literature.Configurations;
+using Client.Literature.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpClient();
-var app = builder.Build();
 
+builder.Services.Configure<ApiLiteratureOptions>(
+    builder.Configuration.GetSection(ApiLiteratureOptions.ApiLiterature)
+);
+
+var app = builder.Build();
 
 var jsonOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
 
-app.MapGet("/literaturetime/{hour}/{minute}", async ([FromServices] HttpClient httpClient, string hour, string minute) =>
+app.MapGet("/literaturetime/{hour}/{minute}", async (
+    [FromServices] HttpClient httpClient,
+    [FromServices] IOptions<ApiLiteratureOptions> options,
+    string hour,
+    string minute) =>
 {
+    var url = $"{options.Value.Endpoint}/api/1.0/literature/{hour}/{minute}";
     var httpRequestMessage = new HttpRequestMessage(
             HttpMethod.Get,
-            $"http://api-literature.192.168.1.11.nip.io/api/1.0/literature/{hour}/{minute}")
+            url)
     { };
 
     var httpResponse = await httpClient.SendAsync(httpRequestMessage);
@@ -38,21 +50,3 @@ app.UseRouting();
 app.MapFallbackToFile("index.html");
 
 app.Run();
-
-public record ProblemDetailsWithStackTrace(
-    string Type,
-    string Title,
-    int Status,
-    string Detail,
-    string Instance,
-    string StackTrace
-);
-
-public record LiteratureTime(
-    string Time,
-    string QuoteFirst,
-    string QuoteTime,
-    string QuoteLast,
-    string Title,
-    string Author
-);
