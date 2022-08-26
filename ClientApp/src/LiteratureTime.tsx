@@ -30,3 +30,19 @@ export const LiteratureTime = ({
         </div>
     );
 };
+
+export const LiteratureTimeMissing = () => {
+    return (
+        <div className="LiteratureTime">
+            <div id="main_text">
+                <blockquote id="lit_quote">
+                    “Time is an illusion. Lunchtime doubly so.”
+                </blockquote>
+                <cite>
+                    -<span id="book">The Hitchhiker's Guide to the Galaxy</span>
+                    ,<span id="author">Douglas Adams</span>
+                </cite>
+            </div>
+        </div>
+    );
+};

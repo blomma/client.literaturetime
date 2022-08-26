@@ -1,5 +1,10 @@
-import { LiteratureTime, LiteratureTimeResult } from "./LiteratureTime";
-import React, { useEffect } from "react";
+import {
+    LiteratureTime,
+    LiteratureTimeMissing,
+    LiteratureTimeResult,
+} from "./LiteratureTime";
+import React, { CSSProperties, useEffect } from "react";
+import CircleLoader from "react-spinners/CircleLoader";
 
 export enum ApiStatus {
     // API request is being made
@@ -30,6 +35,11 @@ function App() {
         status: ApiStatus.Loading,
     });
 
+    const override: CSSProperties = {
+        display: "block",
+        margin: "150px auto",
+    };
+
     useEffect(() => {
         async function fetchData() {
             const request: RequestInit = {
@@ -38,14 +48,10 @@ function App() {
                     Accept: "application/json",
                 },
             };
-            // var offset = -new Date().getTimezoneOffset() * 60000;
-            // var milliseconds = Date.now() + offset;
             var date = new Date();
             let hour = `${date.getHours()}`.padStart(2, "0");
             let minute = `${date.getMinutes()}`.padStart(2, "0");
 
-            //var requestUrl = `/literaturetime/${milliseconds}`;
-            // var requestUrl = `/literaturetime/1660960680000`;
             var requestUrl = `/literaturetime/${hour}/${minute}`;
             const response = await fetch(requestUrl, request);
             if (!response.ok) {
@@ -53,7 +59,6 @@ function App() {
                     .json()
                     .then((data) => data as ProblemDetails)
                     .then((data) => {
-                        console.log(data);
                         setData({
                             status: ApiStatus.Error,
                             error: Error(data.detail),
@@ -86,9 +91,9 @@ function App() {
     return (() => {
         switch (data.status) {
             case ApiStatus.Loading:
-                return <p>LOADING</p>;
+                return <CircleLoader size={150} cssOverride={override} />;
             case ApiStatus.Error:
-                return <p>{data.error?.toString()}</p>;
+                return <LiteratureTimeMissing />;
             case ApiStatus.Success:
                 return <LiteratureTime literatureTime={data.data!} />;
         }
