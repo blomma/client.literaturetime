@@ -76,17 +76,17 @@ function App() {
                     var quoteFirst = data.quoteFirst
                         .replaceAll('"""', '"')
                         .replaceAll('""', '"');
-                    quoteFirst = smartypants(quoteFirst, "1");
+                    quoteFirst = smartypants(quoteFirst);
 
                     var quoteTime = data.quoteTime
                         .replaceAll('"""', '"')
                         .replaceAll('""', '"');
-                    quoteTime = smartypants(quoteTime, "1");
+                    quoteTime = smartypants(quoteTime);
 
                     var quoteLast = data.quoteLast
                         .replaceAll('"""', '"')
                         .replaceAll('""', '"');
-                    quoteLast = smartypants(quoteLast, "1");
+                    quoteLast = smartypants(quoteLast);
 
                     var literatureTimeResult: LiteratureTimeResult = {
                         author: data.author,
