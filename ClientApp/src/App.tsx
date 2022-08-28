@@ -5,6 +5,7 @@ import {
 } from "./LiteratureTime";
 import React, { CSSProperties, useEffect } from "react";
 import CircleLoader from "react-spinners/CircleLoader";
+import smartypants from "./smartypants";
 
 export enum ApiStatus {
     // API request is being made
@@ -72,9 +73,33 @@ function App() {
                 .json()
                 .then((data) => data as LiteratureTimeResult)
                 .then((data) => {
+                    var quoteFirst = data.quoteFirst
+                        .replaceAll('"""', '"')
+                        .replaceAll('""', '"');
+                    quoteFirst = smartypants(quoteFirst, "1");
+
+                    var quoteTime = data.quoteTime
+                        .replaceAll('"""', '"')
+                        .replaceAll('""', '"');
+                    quoteTime = smartypants(quoteTime, "1");
+
+                    var quoteLast = data.quoteLast
+                        .replaceAll('"""', '"')
+                        .replaceAll('""', '"');
+                    quoteLast = smartypants(quoteLast, "1");
+
+                    var literatureTimeResult: LiteratureTimeResult = {
+                        author: data.author,
+                        title: data.title,
+                        time: data.time,
+                        quoteFirst: quoteFirst,
+                        quoteTime: quoteTime,
+                        quoteLast: quoteLast,
+                    };
+
                     setData({
                         status: ApiStatus.Success,
-                        data: data,
+                        data: literatureTimeResult,
                     });
                 })
                 .catch((err: Error) => {
