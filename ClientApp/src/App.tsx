@@ -73,20 +73,9 @@ function App() {
                 .json()
                 .then((data) => data as LiteratureTimeResult)
                 .then((data) => {
-                    var quoteFirst = data.quoteFirst
-                        .replaceAll('"""', '"')
-                        .replaceAll('""', '"');
-                    quoteFirst = smartypants(quoteFirst);
-
-                    var quoteTime = data.quoteTime
-                        .replaceAll('"""', '"')
-                        .replaceAll('""', '"');
-                    quoteTime = smartypants(quoteTime);
-
-                    var quoteLast = data.quoteLast
-                        .replaceAll('"""', '"')
-                        .replaceAll('""', '"');
-                    quoteLast = smartypants(quoteLast);
+                    var quoteFirst = smartypants(data.quoteFirst);
+                    var quoteTime = smartypants(data.quoteTime);
+                    var quoteLast = smartypants(data.quoteLast);
 
                     var literatureTimeResult: LiteratureTimeResult = {
                         author: data.author,
