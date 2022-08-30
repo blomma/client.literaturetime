@@ -1,8 +1,8 @@
+namespace Client.Literature.Handlers;
+
 using System.Text.Json;
 using Client.Literature.Exceptions;
 using Microsoft.AspNetCore.Mvc;
-
-namespace Client.Literature.HttpHandlers;
 
 public class ProblemDetailsHandler : DelegatingHandler
 {

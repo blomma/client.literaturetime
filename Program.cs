@@ -1,5 +1,5 @@
 using Client.Literature.Configurations;
-using Client.Literature.HttpHandlers;
+using Client.Literature.Handlers;
 using Client.Literature.Middlewares;
 using Client.Literature.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -29,16 +29,13 @@ app.MapGet("/literaturetime/{hour}/{minute}", async (
     string hour,
     string minute) =>
 {
-    var url = $"{options.Value.Endpoint}/api/1.0/literature/{hour}/{minute}";
-    var httpRequestMessage = new HttpRequestMessage(
-            HttpMethod.Get,
-            url)
-    { };
+    var response = await httpClient.GetAsync(
+        $"{options.Value.Endpoint}/api/1.0/literature/{hour}/{minute}"
+    );
 
-    var httpResponse = await httpClient.SendAsync(httpRequestMessage);
-    using var contentStream = await httpResponse.Content.ReadAsStreamAsync();
-
+    using var contentStream = await response.Content.ReadAsStreamAsync();
     var literaturetime = await JsonSerializer.DeserializeAsync<LiteratureTime>(contentStream, jsonOptions);
+
     return Results.Ok(literaturetime);
 })
 .WithName("GetLiteratureTime");
