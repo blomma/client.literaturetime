@@ -1,15 +1,23 @@
 using Client.Literature.Configurations;
+using Client.Literature.HttpHandlers;
+using Client.Literature.Middlewares;
 using Client.Literature.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddHttpClient();
+builder.Services
+    .AddHttpClient(Options.DefaultName)
+    .AddHttpMessageHandler<ProblemDetailsHandler>();
+
+builder.Services.AddMvcCore();
+builder.Services.AddManagedResponseException();
 
 builder.Services.Configure<ApiLiteratureOptions>(
     builder.Configuration.GetSection(ApiLiteratureOptions.ApiLiterature)
 );
+builder.Services.AddTransient<ProblemDetailsHandler>();
 
 var app = builder.Build();
 
@@ -30,15 +38,6 @@ app.MapGet("/literaturetime/{hour}/{minute}", async (
     var httpResponse = await httpClient.SendAsync(httpRequestMessage);
     using var contentStream = await httpResponse.Content.ReadAsStreamAsync();
 
-    if (
-        !httpResponse.IsSuccessStatusCode &&
-        httpResponse.Content.Headers.ContentType?.MediaType == "application/problem+json"
-        )
-    {
-        var problemDetails = await JsonSerializer.DeserializeAsync<ProblemDetailsWithStackTrace>(contentStream, jsonOptions);
-        return Results.Problem(problemDetails.Detail, problemDetails.Instance, problemDetails.Status, problemDetails.Title, problemDetails.Type);
-    }
-
     var literaturetime = await JsonSerializer.DeserializeAsync<LiteratureTime>(contentStream, jsonOptions);
     return Results.Ok(literaturetime);
 })
@@ -48,5 +47,6 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.MapFallbackToFile("index.html");
+app.UseManagedResponseException();
 
 app.Run();
