@@ -1,6 +1,6 @@
 # client.literaturetime
 
-Clock using time quotes from literature, based on work and idea by [JohannesNE](https://github.com/JohannesNE/literature-clock), which in turn was based on work and idea by [Jaap Meijers](http://www.eerlijkemedia.nl/) ([E-reader clock](https://www.instructables.com/id/Literary-Clock-Made-From-E-reader/)).
+Clock using time quotes from literature, based on work and idea by [JohannesNE](https://github.com/JohannesNE/literature-clock), which in turn was based on work and idea by [Jaap Meijers](http://www.eerlijkemedia.nl/) and [E-reader clock](https://www.instructables.com/id/Literary-Clock-Made-From-E-reader/).
 
 The origin of the literature quotes are, and i quote from https://www.instructables.com/Literary-Clock-Made-From-E-reader/
 
