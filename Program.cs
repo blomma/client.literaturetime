@@ -1,7 +1,7 @@
-using Client.Literature.Configurations;
-using Client.Literature.Handlers;
-using Client.Literature.Middlewares;
-using Client.Literature.Models;
+using Client.LiteratureTime.Configurations;
+using Client.LiteratureTime.Handlers;
+using Client.LiteratureTime.Middlewares;
+using Client.LiteratureTime.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Text.Json;

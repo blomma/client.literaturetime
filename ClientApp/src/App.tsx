@@ -54,6 +54,7 @@ function App() {
             let minute = `${date.getMinutes()}`.padStart(2, "0");
 
             var requestUrl = `/literaturetime/${hour}/${minute}`;
+            // var requestUrl = `/literaturetime/01/13`;
             const response = await fetch(requestUrl, request);
             if (!response.ok) {
                 await response

@@ -1,6 +1,6 @@
 {
-    "short_name": "client.literature",
-    "name": "client.literature",
+    "short_name": "client.literaturetime",
+    "name": "client.literaturetime",
     "icons": [
         {
             "src": "favicon.ico",

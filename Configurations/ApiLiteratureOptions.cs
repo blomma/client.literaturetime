@@ -1,4 +1,4 @@
-namespace Client.Literature.Configurations;
+namespace Client.LiteratureTime.Configurations;
 
 public class ApiLiteratureOptions
 {

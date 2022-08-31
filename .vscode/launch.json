@@ -9,7 +9,7 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceFolder}/bin/Debug/net6.0/client.literature.dll",
+      "program": "${workspaceFolder}/bin/Debug/net6.0/client.literaturetime.dll",
       "args": [],
       "cwd": "${workspaceFolder}",
       "stopAtEntry": false,
@@ -35,7 +35,7 @@
       "request": "launch",
       "preLaunchTask": "docker-run: debug",
       "netCore": {
-        "appProject": "${workspaceFolder}/client.literature.csproj"
+        "appProject": "${workspaceFolder}/client.literaturetime.csproj"
       }
     }
   ]

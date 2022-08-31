@@ -1,4 +1,4 @@
-namespace Client.Literature.Models;
+namespace Client.LiteratureTime.Models;
 
 public record LiteratureTime(
     string Time,

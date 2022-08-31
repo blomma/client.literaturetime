@@ -8,7 +8,7 @@ metadata:
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: client-literature
+  name: client-literaturetime
   namespace: literature
 
 spec:
@@ -16,11 +16,11 @@ spec:
   template:
     metadata:
       labels:
-        app: client-literature
+        app: client-literaturetime
     spec:
       containers:
-        - name: client-literature
-          image: ghcr.io/blomma/client.literature:main
+        - name: client-literaturetime
+          image: ghcr.io/blomma/client.literaturetime:main
           ports:
             - containerPort: 80
           env:
@@ -29,13 +29,13 @@ spec:
           imagePullPolicy: Always
   selector:
     matchLabels:
-      app: client-literature
+      app: client-literaturetime
 
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  name: client-literature
+  name: client-literaturetime
   namespace: literature
 
 spec:
@@ -43,38 +43,38 @@ spec:
     - name: http
       port: 80
   selector:
-    app: client-literature
+    app: client-literaturetime
 
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: client-literature-dev-http
+  name: client-literaturetime-dev-http
   namespace: literature
 spec:
   entryPoints:
     - web
   routes:
-    - match: Host(`client-literature.192.168.1.11.nip.io`) && PathPrefix(`/`)
+    - match: Host(`client-literaturetime.192.168.1.11.nip.io`) && PathPrefix(`/`)
       kind: Rule
       services:
-        - name: client-literature
+        - name: client-literaturetime
           port: http
 
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: client-literature-dev-https
+  name: client-literaturetime-dev-https
   namespace: literature
 spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`client-literature.192.168.1.11.nip.io`) && PathPrefix(`/`)
+    - match: Host(`client-literaturetime.192.168.1.11.nip.io`) && PathPrefix(`/`)
       kind: Rule
       services:
-        - name: client-literature
+        - name: client-literaturetime
           port: http
 
 ---
@@ -117,7 +117,7 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: client-literature-http-prod
+  name: client-literaturetime-http-prod
   namespace: literature
 spec:
   entryPoints:
@@ -126,7 +126,7 @@ spec:
     - match: Host(`literature.artsoftheinsane.com`) && PathPrefix(`/`)
       kind: Rule
       services:
-        - name: client-literature
+        - name: client-literaturetime
           port: http
       middlewares:
         - name: redirect
@@ -135,7 +135,7 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: client-literature-prod
+  name: client-literaturetime-prod
   namespace: literature
 spec:
   entryPoints:
@@ -144,7 +144,7 @@ spec:
     - match: Host(`literature.artsoftheinsane.com`) && PathPrefix(`/`)
       kind: Rule
       services:
-        - name: client-literature
+        - name: client-literaturetime
           port: http
 
   tls:

@@ -13,16 +13,16 @@ RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
 RUN . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
 RUN . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
 ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
-COPY ["client.literature.csproj", "./"]
-RUN dotnet restore "client.literature.csproj"
+COPY ["client.literaturetime.csproj", "./"]
+RUN dotnet restore "client.literaturetime.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "client.literature.csproj" -c Release -o /app/build
+RUN dotnet build "client.literaturetime.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "client.literature.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "client.literaturetime.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "client.literature.dll"]
+ENTRYPOINT ["dotnet", "client.literaturetime.dll"]

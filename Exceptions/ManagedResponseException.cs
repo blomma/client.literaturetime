@@ -1,7 +1,7 @@
 using System.Runtime.Serialization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Client.Literature.Exceptions;
+namespace Client.LiteratureTime.Exceptions;
 
 
 [Serializable]
