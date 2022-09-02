@@ -1,21 +1,11 @@
-@import url("https://fonts.googleapis.com/css2?family=Merriweather&display=swap");
-
-.LiteratureTime {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow: auto;
-}
-
-#main_text {
-    width: 60vw;
-    margin: auto;
-    color: dimgrey;
-    font-family: "Merriweather", Times, serif;
+.quote {
+    display: flex;
+    justify-content: center;
 }
 
 #lit_quote {
-    font-size: 2.5vw;
+    font-size: 3vw;
+    width: 60vw;
 }
 
 #lit_quote em {
@@ -24,22 +14,28 @@
     font-style: normal;
 }
 
-cite {
-    float: right;
-    padding-left: 10vw;
-    font-size: 1.3vw;
+.cite {
+    display: flex;
+    justify-content: center;
 }
 
-cite #book {
+#lit_cite {
+    width: 60vw;
+    font-size: 1.5vw;
+    display: flex;
+    justify-content: flex-end;
+}
+
+#lit_cite #book {
     font-style: normal;
 }
 
-cite #book::before {
+#lit_cite #book::before {
     content: " ";
     white-space: pre;
 }
 
-cite #author::before {
+#lit_cite #author::before {
     content: " ";
     white-space: pre;
 }

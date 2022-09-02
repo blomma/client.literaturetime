@@ -15,34 +15,38 @@ export const LiteratureTime = ({
     literatureTime: LiteratureTimeResult;
 }) => {
     return (
-        <div className="LiteratureTime">
-            <div id="main_text">
+        <>
+            <div className="quote">
                 <blockquote id="lit_quote">
                     {literatureTime.quoteFirst}
                     <em>{literatureTime.quoteTime}</em>
                     {literatureTime.quoteLast}
                 </blockquote>
-                <cite>
+            </div>
+            <div className="cite">
+                <cite id="lit_cite">
                     -<span id="book">{literatureTime.title}</span>,
                     <span id="author">{literatureTime.author}</span>
                 </cite>
             </div>
-        </div>
+        </>
     );
 };
 
 export const LiteratureTimeMissing = () => {
     return (
-        <div className="LiteratureTime">
-            <div id="main_text">
+        <>
+            <div className="quote">
                 <blockquote id="lit_quote">
                     “Time is an illusion. Lunchtime doubly so.”
                 </blockquote>
-                <cite>
+            </div>
+            <div className="cite">
+                <cite id="lit_cite">
                     -<span id="book">The Hitchhiker's Guide to the Galaxy</span>
                     ,<span id="author">Douglas Adams</span>
                 </cite>
             </div>
-        </div>
+        </>
     );
 };
