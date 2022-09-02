@@ -103,16 +103,17 @@ function App() {
         fetchData();
     }, []);
 
-    return (() => {
-        switch (data.status) {
-            case ApiStatus.Loading:
-                return <CircleLoader size={150} cssOverride={override} />;
-            case ApiStatus.Error:
-                return <LiteratureTimeMissing />;
-            case ApiStatus.Success:
-                return <LiteratureTime literatureTime={data.data!} />;
-        }
-    })();
+    return (
+        <main>
+            {data.status === ApiStatus.Loading && (
+                <CircleLoader size={150} cssOverride={override} />
+            )}
+            {data.status === ApiStatus.Error && <LiteratureTimeMissing />}
+            {data.status === ApiStatus.Success && (
+                <LiteratureTime literatureTime={data.data!} />
+            )}
+        </main>
+    );
 }
 
 export default App;
