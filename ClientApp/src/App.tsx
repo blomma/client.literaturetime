@@ -38,7 +38,6 @@ interface ProblemDetails {
     status: number;
     detail: string;
     instance: string;
-    stackTrace: string;
 }
 
 type State = PendingState | LoadingState | SuccessState | ErrorState;
