@@ -57,23 +57,19 @@ function App() {
             // var requestUrl = `/literaturetime/01/13`;
             const response = await fetch(requestUrl, request);
             if (!response.ok) {
-                await response
-                    .json()
-                    .then((data) => data as ProblemDetails)
-                    .then((data) => {
-                        setData({
-                            status: ApiStatus.Error,
-                            error: Error(data.detail),
-                        });
+                await response.json().then((data: ProblemDetails) => {
+                    setData({
+                        status: ApiStatus.Error,
+                        error: Error(data.detail),
                     });
+                });
 
                 return;
             }
 
             await response
                 .json()
-                .then((data) => data as LiteratureTimeResult)
-                .then((data) => {
+                .then((data: LiteratureTimeResult) => {
                     var quoteFirst = smartypants(data.quoteFirst);
                     var quoteTime = smartypants(data.quoteTime);
                     var quoteLast = smartypants(data.quoteLast);
