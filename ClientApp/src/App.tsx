@@ -7,13 +7,29 @@ import React, { CSSProperties, useEffect } from "react";
 import CircleLoader from "react-spinners/CircleLoader";
 import smartypants from "./smartypants";
 
-export enum ApiStatus {
-    // API request is being made
+enum Status {
+    Pending,
     Loading,
-    // API call was successful
     Success,
-    // API resulted in an error
     Error,
+}
+
+interface PendingState {
+    status: Status.Pending;
+}
+
+interface LoadingState {
+    status: Status.Loading;
+}
+
+interface SuccessState {
+    status: Status.Success;
+    data: LiteratureTimeResult;
+}
+
+interface ErrorState {
+    status: Status.Error;
+    error: Error;
 }
 
 interface ProblemDetails {
@@ -25,15 +41,11 @@ interface ProblemDetails {
     stackTrace: string;
 }
 
-interface IApiData {
-    status: ApiStatus;
-    error?: Error;
-    data?: LiteratureTimeResult;
-}
+type State = PendingState | LoadingState | SuccessState | ErrorState;
 
 function App() {
-    const [data, setData] = React.useState<IApiData>({
-        status: ApiStatus.Loading,
+    const [state, setState] = React.useState<State>({
+        status: Status.Loading,
     });
 
     const override: CSSProperties = {
@@ -54,12 +66,11 @@ function App() {
             let minute = `${date.getMinutes()}`.padStart(2, "0");
 
             var requestUrl = `/literaturetime/${hour}/${minute}`;
-            // var requestUrl = `/literaturetime/01/13`;
             const response = await fetch(requestUrl, request);
             if (!response.ok) {
                 await response.json().then((data: ProblemDetails) => {
-                    setData({
-                        status: ApiStatus.Error,
+                    setState({
+                        status: Status.Error,
                         error: Error(data.detail),
                     });
                 });
@@ -83,14 +94,14 @@ function App() {
                         quoteLast: quoteLast,
                     };
 
-                    setData({
-                        status: ApiStatus.Success,
+                    setState({
+                        status: Status.Success,
                         data: literatureTimeResult,
                     });
                 })
                 .catch((err: Error) => {
-                    setData({
-                        status: ApiStatus.Error,
+                    setState({
+                        status: Status.Error,
                         error: err,
                     });
                 });
@@ -101,12 +112,14 @@ function App() {
 
     return (
         <main>
-            {data.status === ApiStatus.Loading && (
+            {state.status === (Status.Loading || Status.Pending) && (
                 <CircleLoader size={150} cssOverride={override} />
             )}
-            {data.status === ApiStatus.Error && <LiteratureTimeMissing />}
-            {data.status === ApiStatus.Success && (
-                <LiteratureTime literatureTime={data.data!} />
+
+            {state.status === Status.Error && <LiteratureTimeMissing />}
+
+            {state.status === Status.Success && (
+                <LiteratureTime literatureTime={state.data} />
             )}
         </main>
     );
