@@ -2,6 +2,7 @@ using Client.LiteratureTime.Configurations;
 using Client.LiteratureTime.Handlers;
 using Client.LiteratureTime.Middlewares;
 using Client.LiteratureTime.Models;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
@@ -13,6 +14,20 @@ builder.Services
 
 builder.Services.AddMvcCore();
 builder.Services.AddManagedResponseException();
+builder.Services.AddHttpLogging(logging =>
+{
+    logging.RequestHeaders.Add("Referer");
+    logging.RequestHeaders.Add("X-Forwarded-For");
+    logging.RequestHeaders.Add("X-Forwarded-Host");
+    logging.RequestHeaders.Add("X-Forwarded-Port");
+    logging.RequestHeaders.Add("X-Forwarded-Proto");
+    logging.RequestHeaders.Add("X-Forwarded-Server");
+    logging.RequestHeaders.Add("X-Real-Ip");
+    logging.RequestHeaders.Add("Upgrade-Insecure-Requests");
+    logging.LoggingFields = HttpLoggingFields.All;
+    logging.RequestBodyLogLimit = 4096;
+    logging.ResponseBodyLogLimit = 4096;
+});
 
 builder.Services.Configure<ApiLiteratureOptions>(
     builder.Configuration.GetSection(ApiLiteratureOptions.ApiLiterature)
@@ -20,6 +35,7 @@ builder.Services.Configure<ApiLiteratureOptions>(
 builder.Services.AddTransient<ProblemDetailsHandler>();
 
 var app = builder.Build();
+app.UseHttpLogging();
 
 var jsonOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
 
