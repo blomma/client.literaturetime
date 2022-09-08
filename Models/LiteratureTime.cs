@@ -6,5 +6,6 @@ public record LiteratureTime(
     string QuoteTime,
     string QuoteLast,
     string Title,
-    string Author
+    string Author,
+    string Hash
 );

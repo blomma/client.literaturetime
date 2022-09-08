@@ -9,7 +9,7 @@ import { LiteratureTimeResult } from "./Models/LiteratureTimeResult";
 import { ProblemDetails } from "./Models/ProblemDetails";
 
 interface Api {
-    getLiteratureTime: (hour: string, minute: string) => void;
+    getLiteratureTime: (hour: string, minute: string, hash?: string) => void;
 }
 
 const LiteratureTimeStateContext =
@@ -25,7 +25,11 @@ export const LiteratureTimeProvider = ({
     const [state, dispatch] = useReducer(reducer, defaultStateValue);
 
     const api = useMemo(() => {
-        const getLiteratureTime = async (hour: string, minute: string) => {
+        const getLiteratureTime = async (
+            hour: string,
+            minute: string,
+            hash?: string
+        ) => {
             const request: RequestInit = {
                 method: "GET",
                 headers: {
@@ -33,7 +37,11 @@ export const LiteratureTimeProvider = ({
                 },
             };
 
-            var requestUrl = `/literaturetime/${hour}/${minute}`;
+            var requestUrl =
+                hash !== undefined
+                    ? `/literaturetime/${hour}/${minute}/${hash}`
+                    : `/literaturetime/${hour}/${minute}`;
+
             const response = await fetch(requestUrl, request);
             if (!response.ok) {
                 await response.json().then((data: ProblemDetails) => {
