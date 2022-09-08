@@ -1,12 +1,24 @@
-import { CSSProperties } from "react";
+import { CSSProperties, useEffect } from "react";
 import { CircleLoader } from "react-spinners";
 import { Status } from "./Models/State";
-import { useLiteratureTime } from "./UseLiteratureTime";
+import {
+    useLiteratureTimeApi,
+    useLiteratureTimeState,
+} from "./LiteratureTimeProvider";
 
 import "./LiteratureTime.css";
 
 export const LiteratureTime = () => {
-    const state = useLiteratureTime();
+    const state = useLiteratureTimeState();
+    const { getLiteratureTime } = useLiteratureTimeApi();
+
+    useEffect(() => {
+        var date = new Date();
+        let hour = `${date.getHours()}`.padStart(2, "0");
+        let minute = `${date.getMinutes()}`.padStart(2, "0");
+
+        getLiteratureTime(hour, minute);
+    }, [getLiteratureTime]);
 
     const override: CSSProperties = {
         display: "block",
