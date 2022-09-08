@@ -1,4 +1,4 @@
-import { CSSProperties, useEffect } from "react";
+import { CSSProperties, Fragment, useEffect } from "react";
 import { CircleLoader } from "react-spinners";
 import { Status } from "./Models/State";
 import {
@@ -55,9 +55,41 @@ export const LiteratureTime = () => {
         <>
             <div className="quote">
                 <blockquote id="lit_quote">
-                    {state.data.quoteFirst}
+                    {state.data.quoteFirst
+                        .split("\n")
+                        .map((value, index, array) => {
+                            var renderBreak =
+                                array.length - 1 !== index ||
+                                state.data.quoteFirst.endsWith("\n");
+
+                            return renderBreak ? (
+                                <Fragment key={index}>
+                                    {value}
+                                    <br />
+                                </Fragment>
+                            ) : (
+                                <Fragment key={index}>{value}</Fragment>
+                            );
+                        })}
+
                     <em>{state.data.quoteTime}</em>
-                    {state.data.quoteLast}
+
+                    {state.data.quoteLast
+                        .split("\n")
+                        .map((value, index, array) => {
+                            var renderBreak =
+                                array.length - 1 !== index ||
+                                state.data.quoteLast.endsWith("\n");
+
+                            return renderBreak ? (
+                                <Fragment key={index}>
+                                    {value}
+                                    <br />
+                                </Fragment>
+                            ) : (
+                                <Fragment key={index}>{value}</Fragment>
+                            );
+                        })}
                 </blockquote>
             </div>
             <div className="cite">

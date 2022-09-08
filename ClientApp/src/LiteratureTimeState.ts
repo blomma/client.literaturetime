@@ -35,6 +35,9 @@ export const reducer = (state: State, action: Actions): State => {
             var quoteTime = smartypants(action.data.quoteTime);
             var quoteLast = smartypants(action.data.quoteLast);
 
+            quoteFirst = quoteFirst.replaceAll("<br>", "\n");
+            quoteLast = quoteLast.replaceAll("<br>", "\n");
+
             return {
                 ...state,
                 status: Status.Success,
