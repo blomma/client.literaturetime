@@ -20,6 +20,7 @@ WORKDIR "/src/."
 RUN dotnet build "client.literaturetime.csproj" -c Release -o /app/build
 
 FROM build AS publish
+ARG REACT_APP_GIT_VERSION
 RUN dotnet publish "client.literaturetime.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
