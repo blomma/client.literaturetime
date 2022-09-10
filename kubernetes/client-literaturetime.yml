@@ -147,4 +147,3 @@ spec:
       name: tlsoptions
     domains:
       - main: literature.artsoftheinsane.com
-    secretName: literature-artsoftheinsane-com

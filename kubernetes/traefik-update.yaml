@@ -14,7 +14,6 @@ spec:
       path: /data
       annotations: {}
     additionalArguments:
-      - "--log.level=DEBUG"
       - "--certificatesresolvers.le-staging.acme.email=blomma@artsoftheinsane.com"
       - "--certificatesresolvers.le-staging.acme.storage=/data/acme.json"
       - "--certificatesresolvers.le-staging.acme.tlschallenge=true"
