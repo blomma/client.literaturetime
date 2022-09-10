@@ -75,7 +75,6 @@ app.MapGet("/literaturetime/{hour}/{minute}/{hash}", async (
 .WithName("GetSpecificLiteratureTime");
 
 app.UseStaticFiles();
-app.UseRouting();
 
 app.MapFallbackToFile("index.html");
 app.UseManagedResponseException();
