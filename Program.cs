@@ -74,9 +74,28 @@ app.MapGet("/literaturetime/{hour}/{minute}/{hash}", async (
 })
 .WithName("GetSpecificLiteratureTime");
 
-app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = ctx =>
+    {
+        var cacheControl = ctx.File.PhysicalPath.Contains("static")
+            ? "public, max-age=31536000"
+            : "no-cache";
 
-app.MapFallbackToFile("index.html");
+        ctx.Context.Response.Headers.Append(
+                "Cache-Control", cacheControl);
+    }
+});
+
+app.MapFallbackToFile("index.html", new StaticFileOptions
+{
+    OnPrepareResponse = ctx =>
+    {
+        ctx.Context.Response.Headers.Append(
+                "Cache-Control", "no-cache");
+    }
+});
+
 app.UseManagedResponseException();
 
 app.Run();
