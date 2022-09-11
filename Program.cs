@@ -39,15 +39,18 @@ app.UseHttpLogging();
 
 var jsonOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
 
-app.MapGet("/literaturetime/{hour}/{minute}", async (
+app.MapGet("/literaturetime/{hour}/{minute}/{hash?}", async (
     [FromServices] HttpClient httpClient,
     [FromServices] IOptions<ApiLiteratureOptions> options,
     string hour,
-    string minute) =>
+    string minute,
+    string? hash) =>
 {
-    var response = await httpClient.GetAsync(
-        $"{options.Value.Endpoint}/api/1.0/literature/{hour}/{minute}"
-    );
+    var requestUrl = hash != null
+        ? $"{options.Value.Endpoint}/api/1.0/literature/{hour}/{minute}/{hash}"
+        : $"{options.Value.Endpoint}/api/1.0/literature/{hour}/{minute}";
+
+    var response = await httpClient.GetAsync(requestUrl);
 
     using var contentStream = await response.Content.ReadAsStreamAsync();
     var literaturetime = await JsonSerializer.DeserializeAsync<LiteratureTime>(contentStream, jsonOptions);
@@ -55,24 +58,6 @@ app.MapGet("/literaturetime/{hour}/{minute}", async (
     return Results.Ok(literaturetime);
 })
 .WithName("GetLiteratureTime");
-
-app.MapGet("/literaturetime/{hour}/{minute}/{hash}", async (
-    [FromServices] HttpClient httpClient,
-    [FromServices] IOptions<ApiLiteratureOptions> options,
-    string hour,
-    string minute,
-    string hash) =>
-{
-    var response = await httpClient.GetAsync(
-        $"{options.Value.Endpoint}/api/1.0/literature/{hour}/{minute}/{hash}"
-    );
-
-    using var contentStream = await response.Content.ReadAsStreamAsync();
-    var literaturetime = await JsonSerializer.DeserializeAsync<LiteratureTime>(contentStream, jsonOptions);
-
-    return Results.Ok(literaturetime);
-})
-.WithName("GetSpecificLiteratureTime");
 
 app.UseStaticFiles(new StaticFileOptions
 {
