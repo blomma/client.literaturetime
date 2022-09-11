@@ -32,9 +32,6 @@
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-type token = [string, string];
-
-const tags_to_skip = /<(\/?)(?:pre|code|kbd|script|math)[^>]*>/i;
 const right_single_quotation_mark = "’";
 const left_single_quotation_mark = "‘";
 const left_double_quotation_mark = "“";
@@ -46,12 +43,8 @@ const horizontal_ellipsis = "…";
  * @param text text to be parsed
  */
 const SmartyPants = (text: string = ""): string => {
-    var tokens: Array<token> = _tokenize(text);
     var result: string = "";
-    /**
-     * Keep track of when we're inside <pre> or <code> tags.
-     */
-    var in_pre: number = 0;
+
     /**
      * This is a cheat, used to get some context
      * for one-character tokens that consist of
@@ -62,50 +55,35 @@ const SmartyPants = (text: string = ""): string => {
      */
     var prev_token_last_char: string = "";
 
-    for (let i = 0; i < tokens.length; i++) {
-        let cur_token = tokens[i];
-        if (cur_token[0] === "tag") {
-            result = result + cur_token[1];
-            let matched = tags_to_skip.exec(cur_token[1]);
-            if (matched) {
-                if (matched[1] === "/") {
-                    in_pre = 0;
-                } else {
-                    in_pre = 1;
-                }
+    for (let i = 0; i < text.length; i++) {
+        let t: string = text[i];
+        let last_char: string = t.substring(t.length - 1, t.length); // Remember last char of this token before processing.
+
+        t = EducateDashes(t);
+        t = EducateEllipses(t);
+        t = EducateBackticks(t);
+
+        if (t === "'") {
+            // Special case: single-character ' token
+            if (/\S/.test(prev_token_last_char)) {
+                t = right_single_quotation_mark;
+            } else {
+                t = left_single_quotation_mark;
+            }
+        } else if (t === '"') {
+            // Special case: single-character " token
+            if (/\S/.test(prev_token_last_char)) {
+                t = right_double_quotation_mark;
+            } else {
+                t = left_double_quotation_mark;
             }
         } else {
-            let t: string = cur_token[1];
-            let last_char: string = t.substring(t.length - 1, t.length); // Remember last char of this token before processing.
-            if (!in_pre) {
-                t = ProcessEscapes(t);
-
-                t = EducateDashes(t);
-                t = EducateEllipses(t);
-                t = EducateBackticks(t);
-
-                if (t === "'") {
-                    // Special case: single-character ' token
-                    if (/\S/.test(prev_token_last_char)) {
-                        t = right_single_quotation_mark;
-                    } else {
-                        t = left_single_quotation_mark;
-                    }
-                } else if (t === '"') {
-                    // Special case: single-character " token
-                    if (/\S/.test(prev_token_last_char)) {
-                        t = right_double_quotation_mark;
-                    } else {
-                        t = left_double_quotation_mark;
-                    }
-                } else {
-                    // Normal case:
-                    t = EducateQuotes(t);
-                }
-            }
-            prev_token_last_char = last_char;
-            result = result + t;
+            // Normal case:
+            t = EducateQuotes(t);
         }
+
+        prev_token_last_char = last_char;
+        result = result + t;
     }
 
     return result;
@@ -297,71 +275,6 @@ const EducateEllipses = (str: string): string => {
     str = str.replace(/\.\.\./g, horizontal_ellipsis);
     str = str.replace(/\. \. \./g, horizontal_ellipsis);
     return str;
-};
-
-/**
- * @param {string} str String
- * @return {string} string, with after processing the following backslash
- *                  escape sequences. This is useful if you want to force a "dumb"
- *                  quote or other character to appear.
- *
- *                  Escape  Value
- *                  ------  -----
- *                  \\      &#92;
- *                  \"      &#34;
- *                  \'      &#39;
- *                  \.      &#46;
- *                  \-      &#45;
- *                  \`      &#96;
- *
- */
-const ProcessEscapes = (str: string): string => {
-    str = str.replace(/\\\\/g, "\\");
-    str = str.replace(/\\"/g, '"');
-    str = str.replace(/\\'/g, "'");
-    str = str.replace(/\\\./g, ".");
-    str = str.replace(/\\-/g, "-");
-    str = str.replace(/\\`/g, "`");
-    return str;
-};
-
-/**
- * @param {string} str String containing HTML markup.
- * @return {Array<token>} Reference to an array of the tokens comprising the input
- *                        string. Each token is either a tag (possibly with nested,
- *                        tags contained therein, such as <a href="<MTFoo>">, or a
- *                        run of text between tags. Each element of the array is a
- *                        two-element array; the first is either 'tag' or 'text';
- *                        the second is the actual value.
- *
- * Based on the _tokenize() subroutine from Brad Choate's MTRegex plugin.
- *     <http://www.bradchoate.com/past/mtregex.php>
- */
-const _tokenize = (str: string): Array<token> => {
-    var pos = 0;
-    var len = str.length;
-    var tokens = [];
-
-    var match = /<!--[\s\S]*?-->|<\?.*?\?>|<[^>]*>/g;
-
-    var matched = null;
-
-    while ((matched = match.exec(str))) {
-        if (pos < matched.index) {
-            let t: token = ["text", str.substring(pos, matched.index)];
-            tokens.push(t);
-        }
-        let t: token = ["tag", matched.toString()];
-        tokens.push(t);
-
-        pos = match.lastIndex;
-    }
-    if (pos < len) {
-        let t: token = ["text", str.substring(pos, len)];
-        tokens.push(t);
-    }
-
-    return tokens;
 };
 
 export { SmartyPants as smartypants };
