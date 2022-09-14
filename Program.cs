@@ -40,6 +40,7 @@ app.UseHttpLogging();
 var jsonOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
 
 app.MapGet("/literaturetime/{hour}/{minute}/{hash?}", async (
+    CancellationToken cancellationToken,
     [FromServices] HttpClient httpClient,
     [FromServices] IOptions<ApiLiteratureOptions> options,
     string hour,
@@ -50,10 +51,10 @@ app.MapGet("/literaturetime/{hour}/{minute}/{hash?}", async (
         ? $"{options.Value.Endpoint}/api/1.0/literature/{hour}/{minute}/{hash}"
         : $"{options.Value.Endpoint}/api/1.0/literature/{hour}/{minute}";
 
-    var response = await httpClient.GetAsync(requestUrl);
+    var response = await httpClient.GetAsync(requestUrl, cancellationToken);
 
-    using var contentStream = await response.Content.ReadAsStreamAsync();
-    var literaturetime = await JsonSerializer.DeserializeAsync<LiteratureTime>(contentStream, jsonOptions);
+    using var contentStream = await response.Content.ReadAsStreamAsync(cancellationToken);
+    var literaturetime = await JsonSerializer.DeserializeAsync<LiteratureTime>(contentStream, jsonOptions, cancellationToken);
 
     return Results.Ok(literaturetime);
 })
