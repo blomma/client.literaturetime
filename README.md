@@ -4,6 +4,8 @@ Clock using time quotes from literature, based on work and idea by [JohannesNE](
 
 This is the frontend for [literature.artsoftheinsane.com](https://literature.artsoftheinsane.com) being feed by a backend api [api.literaturetime](https://github.com/blomma/api.literaturetime)
 
+The kubernetes definition files can be found in the repo [kubernetes.literaturetime](https://github.com/blomma/kubernetes.literaturetime)
+
 I have added some quotes to this list and further cleaned up the list to uniformly use " and ', this is then by way of smartypants transformed to the correct typography in the final render on screen.
 
 The origin of the literature quotes are, and I quote from https://www.instructables.com/Literary-Clock-Made-From-E-reader/
@@ -13,3 +15,5 @@ The origin of the literature quotes are, and I quote from https://www.instructab
 > I combined the two lists, cleaned them up, added a few times I found myself, and turned them into one CSV file.
 >
 > Unfortunately the list does not cover all minutes of the day. I worked around this by using some quotes more than once, for instance if it can be used both in the AM and PM. More vague time indications can be used around a certain time, so this quote from Catcher in the Rye is used at 9.58AM: "I didn't sleep too long, because I think it was only around ten o'clock when I woke up ... "
+
+All of this running on a [k3s.io](https://k3s.io) kubernetes cluster on top of a couple of raspberry pi's.
