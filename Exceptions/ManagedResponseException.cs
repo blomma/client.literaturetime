@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Client.LiteratureTime.Exceptions;
 
-
 [Serializable]
 public class ManagedresponseException : Exception
 {
@@ -26,7 +25,6 @@ public class ManagedresponseException : Exception
         ProblemDetails = problemDetails;
     }
 
-    protected ManagedresponseException(SerializationInfo info, StreamingContext context) : base(info, context)
-    {
-    }
+    protected ManagedresponseException(SerializationInfo info, StreamingContext context)
+        : base(info, context) { }
 }

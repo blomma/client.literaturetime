@@ -16,29 +16,28 @@ public class ManagedResponseExceptionMiddleware
 
     private static readonly RouteData EmptyRouteData = new();
 
-    private static readonly MediaTypeCollection ContentTypes = new()
-    {
-        "application/problem+json"
-    };
+    private static readonly MediaTypeCollection ContentTypes = new() { "application/problem+json" };
 
-    private static readonly HashSet<string> AllowedHeaderNames = new(StringComparer.OrdinalIgnoreCase)
-            {
-                HeaderNames.AccessControlAllowCredentials,
-                HeaderNames.AccessControlAllowHeaders,
-                HeaderNames.AccessControlAllowMethods,
-                HeaderNames.AccessControlAllowOrigin,
-                HeaderNames.AccessControlExposeHeaders,
-                HeaderNames.AccessControlMaxAge,
-
-                HeaderNames.StrictTransportSecurity,
-
-                HeaderNames.WWWAuthenticate,
-            };
+    private static readonly HashSet<string> AllowedHeaderNames =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            HeaderNames.AccessControlAllowCredentials,
+            HeaderNames.AccessControlAllowHeaders,
+            HeaderNames.AccessControlAllowMethods,
+            HeaderNames.AccessControlAllowOrigin,
+            HeaderNames.AccessControlExposeHeaders,
+            HeaderNames.AccessControlMaxAge,
+            HeaderNames.StrictTransportSecurity,
+            HeaderNames.WWWAuthenticate,
+        };
 
     private readonly RequestDelegate _next;
     private IActionResultExecutor<ObjectResult> Executor { get; }
 
-    public ManagedResponseExceptionMiddleware(RequestDelegate next, IActionResultExecutor<ObjectResult> executor)
+    public ManagedResponseExceptionMiddleware(
+        RequestDelegate next,
+        IActionResultExecutor<ObjectResult> executor
+    )
     {
         _next = next;
         Executor = executor;
@@ -78,8 +77,7 @@ public class ManagedResponseExceptionMiddleware
             context.Features.Set<IExceptionHandlerFeature>(feature);
 
             var managedException =
-                error as ManagedresponseException
-                ?? new ManagedresponseException(error);
+                error as ManagedresponseException ?? new ManagedresponseException(error);
 
             await WriteProblemDetails(context, managedException.ProblemDetails);
         }
@@ -132,6 +130,7 @@ public static class ManagedResponseExceptionMiddlewareExtensions
         services.TryAddSingleton<IActionResultExecutor<ObjectResult>, ObjectResultExecutor>();
         return services;
     }
+
     public static IApplicationBuilder UseManagedResponseException(this IApplicationBuilder app)
     {
         return app.UseMiddleware<ManagedResponseExceptionMiddleware>();

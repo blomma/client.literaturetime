@@ -8,9 +8,7 @@ using Microsoft.Extensions.Options;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services
-    .AddHttpClient(Options.DefaultName)
-    .AddHttpMessageHandler<ProblemDetailsHandler>();
+builder.Services.AddHttpClient(Options.DefaultName).AddHttpMessageHandler<ProblemDetailsHandler>();
 
 builder.Services.AddMvcCore();
 builder.Services.AddManagedResponseException();
@@ -39,48 +37,60 @@ app.UseHttpLogging();
 
 var jsonOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
 
-app.MapGet("/literaturetime/{hour}/{minute}/{hash?}", async (
-    CancellationToken cancellationToken,
-    [FromServices] HttpClient httpClient,
-    [FromServices] IOptions<ApiLiteratureOptions> options,
-    string hour,
-    string minute,
-    string? hash) =>
-{
-    var requestUrl = hash != null
-        ? $"{options.Value.Endpoint}/api/1.0/literature/{hour}/{minute}/{hash}"
-        : $"{options.Value.Endpoint}/api/1.0/literature/{hour}/{minute}";
+app.MapGet(
+        "/literaturetime/{hour}/{minute}/{hash?}",
+        async (
+            CancellationToken cancellationToken,
+            [FromServices] HttpClient httpClient,
+            [FromServices] IOptions<ApiLiteratureOptions> options,
+            string hour,
+            string minute,
+            string? hash
+        ) =>
+        {
+            var requestUrl =
+                hash != null
+                    ? $"{options.Value.Endpoint}/api/1.0/literature/{hour}/{minute}/{hash}"
+                    : $"{options.Value.Endpoint}/api/1.0/literature/{hour}/{minute}";
 
-    var response = await httpClient.GetAsync(requestUrl, cancellationToken);
+            var response = await httpClient.GetAsync(requestUrl, cancellationToken);
 
-    using var contentStream = await response.Content.ReadAsStreamAsync(cancellationToken);
-    var literaturetime = await JsonSerializer.DeserializeAsync<LiteratureTime>(contentStream, jsonOptions, cancellationToken);
+            using var contentStream = await response.Content.ReadAsStreamAsync(cancellationToken);
+            var literaturetime = await JsonSerializer.DeserializeAsync<LiteratureTime>(
+                contentStream,
+                jsonOptions,
+                cancellationToken
+            );
 
-    return Results.Ok(literaturetime);
-})
-.WithName("GetLiteratureTime");
+            return Results.Ok(literaturetime);
+        }
+    )
+    .WithName("GetLiteratureTime");
 
-app.UseStaticFiles(new StaticFileOptions
-{
-    OnPrepareResponse = ctx =>
+app.UseStaticFiles(
+    new StaticFileOptions
     {
-        var cacheControl = ctx.File.PhysicalPath.Contains("static")
-            ? "public, max-age=31536000"
-            : "no-cache";
+        OnPrepareResponse = ctx =>
+        {
+            var cacheControl = ctx.File.PhysicalPath.Contains("static")
+                ? "public, max-age=31536000"
+                : "no-cache";
 
-        ctx.Context.Response.Headers.Append(
-                "Cache-Control", cacheControl);
+            ctx.Context.Response.Headers.Append("Cache-Control", cacheControl);
+        }
     }
-});
+);
 
-app.MapFallbackToFile("index.html", new StaticFileOptions
-{
-    OnPrepareResponse = ctx =>
+app.MapFallbackToFile(
+    "index.html",
+    new StaticFileOptions
     {
-        ctx.Context.Response.Headers.Append(
-                "Cache-Control", "no-cache");
+        OnPrepareResponse = ctx =>
+        {
+            ctx.Context.Response.Headers.Append("Cache-Control", "no-cache");
+        }
     }
-});
+);
 
 app.UseManagedResponseException();
 
