@@ -51,45 +51,29 @@ export const LiteratureTime = () => {
     if (state.status === Status.Pending)
         return <CircleLoader size={150} cssOverride={override} />;
 
+    const quoteFragments = (quote: string) => {
+        return quote.split("\n").map((value, index, array) => {
+            var renderBreak =
+                array.length - 1 !== index || quote.endsWith("\n");
+
+            return renderBreak ? (
+                <Fragment key={index}>
+                    {value}
+                    <br />
+                </Fragment>
+            ) : (
+                <Fragment key={index}>{value}</Fragment>
+            );
+        });
+    };
+
     return (
         <>
             <div className="quote">
                 <blockquote id="lit_quote">
-                    {state.data.quoteFirst
-                        .split("\n")
-                        .map((value, index, array) => {
-                            var renderBreak =
-                                array.length - 1 !== index ||
-                                state.data.quoteFirst.endsWith("\n");
-
-                            return renderBreak ? (
-                                <Fragment key={index}>
-                                    {value}
-                                    <br />
-                                </Fragment>
-                            ) : (
-                                <Fragment key={index}>{value}</Fragment>
-                            );
-                        })}
-
+                    {quoteFragments(state.data.quoteFirst)}
                     <em>{state.data.quoteTime}</em>
-
-                    {state.data.quoteLast
-                        .split("\n")
-                        .map((value, index, array) => {
-                            var renderBreak =
-                                array.length - 1 !== index ||
-                                state.data.quoteLast.endsWith("\n");
-
-                            return renderBreak ? (
-                                <Fragment key={index}>
-                                    {value}
-                                    <br />
-                                </Fragment>
-                            ) : (
-                                <Fragment key={index}>{value}</Fragment>
-                            );
-                        })}
+                    {quoteFragments(state.data.quoteLast)}
                 </blockquote>
             </div>
             <div className="cite">
