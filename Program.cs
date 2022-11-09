@@ -1,4 +1,3 @@
-using Client.LiteratureTime.Configurations;
 using Client.LiteratureTime.Handlers;
 using Client.LiteratureTime.Middlewares;
 using Client.LiteratureTime.Models;
@@ -8,7 +7,17 @@ using Microsoft.Extensions.Options;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddHttpClient(Options.DefaultName).AddHttpMessageHandler<ProblemDetailsHandler>();
+builder.Services
+    .AddHttpClient(
+        Options.DefaultName,
+        client =>
+        {
+            client.BaseAddress = new Uri(
+                builder.Configuration.GetConnectionString("api.literaturetime")
+            );
+        }
+    )
+    .AddHttpMessageHandler<ProblemDetailsHandler>();
 
 builder.Services.AddMvcCore();
 builder.Services.AddManagedResponseException();
@@ -27,9 +36,6 @@ builder.Services.AddHttpLogging(logging =>
     logging.ResponseBodyLogLimit = 4096;
 });
 
-builder.Services.Configure<ApiLiteratureOptions>(
-    builder.Configuration.GetSection(ApiLiteratureOptions.ApiLiterature)
-);
 builder.Services.AddTransient<ProblemDetailsHandler>();
 
 var app = builder.Build();
@@ -42,7 +48,7 @@ app.MapGet(
         async (
             CancellationToken cancellationToken,
             [FromServices] HttpClient httpClient,
-            [FromServices] IOptions<ApiLiteratureOptions> options,
+            [FromServices] IConfiguration configuration,
             string hour,
             string minute,
             string? hash
@@ -50,8 +56,8 @@ app.MapGet(
         {
             var requestUrl =
                 hash != null
-                    ? $"{options.Value.Endpoint}/api/2.0/literature/{hour}/{minute}/{hash}"
-                    : $"{options.Value.Endpoint}/api/2.0/literature/{hour}/{minute}";
+                    ? $"/api/2.0/literature/{hour}/{minute}/{hash}"
+                    : $"/api/2.0/literature/{hour}/{minute}";
 
             var response = await httpClient.GetAsync(requestUrl, cancellationToken);
 
