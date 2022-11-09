@@ -50,8 +50,8 @@ app.MapGet(
         {
             var requestUrl =
                 hash != null
-                    ? $"{options.Value.Endpoint}/api/1.0/literature/{hour}/{minute}/{hash}"
-                    : $"{options.Value.Endpoint}/api/1.0/literature/{hour}/{minute}";
+                    ? $"{options.Value.Endpoint}/api/2.0/literature/{hour}/{minute}/{hash}"
+                    : $"{options.Value.Endpoint}/api/2.0/literature/{hour}/{minute}";
 
             var response = await httpClient.GetAsync(requestUrl, cancellationToken);
 

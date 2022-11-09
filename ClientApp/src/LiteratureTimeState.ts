@@ -6,7 +6,6 @@ import {
     Status,
     SuccessState,
 } from "./Models/State";
-import smartypants from "./smartypants";
 
 export type State =
     | PendingState
@@ -31,13 +30,6 @@ type Actions =
 export const reducer = (state: State, action: Actions): State => {
     switch (action.type) {
         case ActionType.onFetchLiteratureTimeSuccess:
-            var quoteFirst = smartypants(action.data.quoteFirst);
-            var quoteTime = smartypants(action.data.quoteTime);
-            var quoteLast = smartypants(action.data.quoteLast);
-
-            quoteFirst = quoteFirst.replaceAll("<br>", "\n");
-            quoteLast = quoteLast.replaceAll("<br>", "\n");
-
             return {
                 ...state,
                 status: Status.Success,
@@ -45,9 +37,9 @@ export const reducer = (state: State, action: Actions): State => {
                     author: action.data.author,
                     title: action.data.title,
                     time: action.data.time,
-                    quoteFirst: quoteFirst,
-                    quoteTime: quoteTime,
-                    quoteLast: quoteLast,
+                    quoteFirst: action.data.quoteFirst,
+                    quoteTime: action.data.quoteTime,
+                    quoteLast: action.data.quoteLast,
                 },
             };
 

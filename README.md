@@ -6,8 +6,6 @@ This is the frontend for [literature.artsoftheinsane.com](https://literature.art
 
 The kubernetes definition files can be found in the repo [kubernetes.literaturetime](https://github.com/blomma/kubernetes.literaturetime)
 
-I have added some quotes to this list and further cleaned up the list to uniformly use " and ', this is then by way of smartypants transformed to the correct typography in the final render on screen.
-
 The origin of the literature quotes are, and I quote from https://www.instructables.com/Literary-Clock-Made-From-E-reader/
 
 > In 2011, newspaper The Guardian asked its readers to submit quotes from books which mention times. They wanted to build an installation for a literary festival. So they have two versions of a list on their website ([1](https://www.theguardian.com/books/table/2011/apr/21/literary-clock?CMP=twt_gu), [2](https://www.guardian.co.uk/books/booksblog/2011/apr/15/christian-marclay-the-clock-literature)).
