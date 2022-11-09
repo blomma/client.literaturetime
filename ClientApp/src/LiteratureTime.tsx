@@ -18,7 +18,8 @@ export const LiteratureTime = () => {
         let minute = `${date.getMinutes()}`.padStart(2, "0");
 
         getLiteratureTime(hour, minute);
-    }, [getLiteratureTime]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const override: CSSProperties = {
         display: "block",
