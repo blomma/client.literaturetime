@@ -13,7 +13,7 @@ builder.Services
         client =>
         {
             client.BaseAddress = new Uri(
-                builder.Configuration.GetConnectionString("api.literaturetime")
+                builder.Configuration.GetConnectionString("api.literaturetime") ?? throw new Exception()
             );
         }
     )
@@ -78,8 +78,10 @@ app.UseStaticFiles(
     {
         OnPrepareResponse = ctx =>
         {
-            var cacheControl = ctx.File.PhysicalPath.Contains("static")
-                ? "public, max-age=31536000"
+            var cacheControl = ctx.File.PhysicalPath != null
+                ? ctx.File.PhysicalPath.Contains("static")
+                    ? "public, max-age=31536000"
+                    : "no-cache"
                 : "no-cache";
 
             ctx.Context.Response.Headers.Append("Cache-Control", cacheControl);
