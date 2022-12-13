@@ -1,14 +1,33 @@
-import "./Footer.css";
 import { Github } from "@icons-pack/react-simple-icons";
+import styled from 'styled-components';
+
+const StyledFooterContainer = styled.div`
+    display: flex;
+    justify-content: center;
+`;
+
+const StyledFooter = styled.footer`
+    display: flex;
+    justify-content: center;
+
+    width: 70vw;
+    padding-top: 10vw;
+    font-size: 1.1vw;
+`;
+
+const StyledFooterLink = styled.a`
+    color: inherit;
+    text-decoration: none;
+`;
 
 export const Footer = () => {
     return (
-        <div className="footer">
-            <footer id="lit_footer">
-                <a href="https://github.com/blomma/client.literaturetime">
+        <StyledFooterContainer>
+            <StyledFooter>
+                <StyledFooterLink href="https://github.com/blomma/client.literaturetime">
                     <Github title="github" />
-                </a>
-            </footer>
-        </div>
+                </StyledFooterLink>
+            </StyledFooter>
+        </StyledFooterContainer>
     );
 };

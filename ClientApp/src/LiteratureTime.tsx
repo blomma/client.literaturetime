@@ -6,7 +6,50 @@ import {
     useLiteratureTimeState,
 } from "./LiteratureTimeProvider";
 
-import "./LiteratureTime.css";
+import styled from "styled-components";
+
+const StyledQuoteContainer = styled.div`
+    display: flex;
+    justify-content: center;
+`;
+
+const StyledQuote = styled.blockquote`
+    font-size: 3vw;
+    width: 70vw;
+`;
+
+const StyledQuoteTime = styled.em`
+    font-weight: 900;
+    color: rgb(231, 111, 81);
+    font-style: normal;
+`;
+
+const StyledCiteContainer = styled.div`
+    display: flex;
+    justify-content: center;
+`;
+
+const StyledCite = styled.cite`
+    width: 60vw;
+    font-size: 1.5vw;
+    display: flex;
+    justify-content: flex-end;
+`;
+
+const StyledCiteBook = styled.span`
+    font-style: normal;
+    ::before {
+        content: " ";
+        white-space: pre;
+    }
+`;
+
+const StyledCiteAuthor = styled.span`
+    ::before {
+        content: " ";
+        white-space: pre;
+    }
+`;
 
 export const LiteratureTime = () => {
     const state = useLiteratureTimeState();
@@ -29,20 +72,20 @@ export const LiteratureTime = () => {
     if (state.status === Status.Error)
         return (
             <>
-                <div className="quote">
-                    <blockquote id="lit_quote">
+                <StyledQuoteContainer>
+                    <StyledQuote>
                         “Time is an illusion. Lunchtime doubly so.”
-                    </blockquote>
-                </div>
-                <div className="cite">
-                    <cite id="lit_cite">
+                    </StyledQuote>
+                </StyledQuoteContainer>
+                <StyledCiteContainer>
+                    <StyledCite>
                         -
-                        <span id="book">
+                        <StyledCiteBook>
                             The Hitchhiker's Guide to the Galaxy
-                        </span>
-                        ,<span id="author">Douglas Adams</span>
-                    </cite>
-                </div>
+                        </StyledCiteBook>
+                        ,<StyledCiteAuthor>Douglas Adams</StyledCiteAuthor>
+                    </StyledCite>
+                </StyledCiteContainer>
             </>
         );
 
@@ -70,19 +113,19 @@ export const LiteratureTime = () => {
 
     return (
         <>
-            <div className="quote">
-                <blockquote id="lit_quote">
+            <StyledQuoteContainer>
+                <StyledQuote>
                     {quoteFragments(state.data.quoteFirst)}
-                    <em>{state.data.quoteTime}</em>
+                    <StyledQuoteTime>{state.data.quoteTime}</StyledQuoteTime>
                     {quoteFragments(state.data.quoteLast)}
-                </blockquote>
-            </div>
-            <div className="cite">
-                <cite id="lit_cite">
-                    -<span id="book">{state.data.title}</span>,
-                    <span id="author">{state.data.author}</span>
-                </cite>
-            </div>
+                </StyledQuote>
+            </StyledQuoteContainer>
+            <StyledCiteContainer>
+                <StyledCite>
+                    -<StyledCiteBook>{state.data.title}</StyledCiteBook>,
+                    <StyledCiteAuthor>{state.data.author}</StyledCiteAuthor>
+                </StyledCite>
+            </StyledCiteContainer>
         </>
     );
 };
