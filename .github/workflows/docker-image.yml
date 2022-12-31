@@ -43,8 +43,8 @@ jobs:
               with:
                   images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
                   tags: |
-                      type=semver,pattern={{version}},value=${{ steps.gitversion.outputs.semVer }}"
-                      type=semver,pattern={{major}},value=${{ steps.gitversion.outputs.semVer }}"
+                      type=semver,pattern={{version}},value=${{ steps.gitversion.outputs.semVer }}
+                      type=semver,pattern={{major}},value=${{ steps.gitversion.outputs.semVer }}
 
             - name: Display GitVersion outputs
               run: |
