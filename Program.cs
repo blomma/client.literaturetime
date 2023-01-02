@@ -4,9 +4,22 @@ using Client.LiteratureTime.Models;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Serilog;
+using Serilog.Events;
 using System.Text.Json;
 
+Log.Logger = new LoggerConfiguration().MinimumLevel
+    .Override("Microsoft", LogEventLevel.Information)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .CreateBootstrapLogger();
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog(
+    (context, services, configuration) =>
+        configuration.ReadFrom.Configuration(context.Configuration).ReadFrom.Services(services)
+);
+
 builder.Services
     .AddHttpClient(
         Options.DefaultName,
