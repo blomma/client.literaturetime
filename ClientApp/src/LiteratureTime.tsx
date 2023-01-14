@@ -11,6 +11,7 @@ import styled from "styled-components";
 const StyledQuoteContainer = styled.div`
     display: flex;
     justify-content: center;
+    color: ${(props) => props.theme.colors.text};
 `;
 
 const StyledQuote = styled.blockquote`
@@ -20,13 +21,14 @@ const StyledQuote = styled.blockquote`
 
 const StyledQuoteTime = styled.em`
     font-weight: 900;
-    color: rgb(231, 111, 81);
     font-style: normal;
+    color: ${(props) => props.theme.colors.quoteTime};
 `;
 
 const StyledCiteContainer = styled.div`
     display: flex;
     justify-content: center;
+    color: ${(props) => props.theme.colors.text};
 `;
 
 const StyledCite = styled.cite`
