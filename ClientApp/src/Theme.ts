@@ -1,8 +1,4 @@
-import {
-    createGlobalStyle,
-    DefaultTheme,
-    ThemeProvider,
-} from "styled-components";
+import { createGlobalStyle, DefaultTheme } from "styled-components";
 
 export const DarkTheme: DefaultTheme = {
     colors: {
@@ -26,5 +22,5 @@ export const GlobalStyle = createGlobalStyle`
         -moz-osx-font-smoothing: grayscale;
         font-family: "Merriweather", Times, serif;
         background-color: ${(props) => props.theme.colors.background};
-}
+    }
 `;
