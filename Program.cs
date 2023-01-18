@@ -15,6 +15,13 @@ Log.Logger = new LoggerConfiguration().MinimumLevel
     .CreateBootstrapLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+    options.MimeTypes = new[] { "application/javascript", "text/css", "text/javascript" };
+});
+
 builder.Host.UseSerilog(
     (context, services, configuration) =>
         configuration.ReadFrom.Configuration(context.Configuration).ReadFrom.Services(services)
@@ -54,6 +61,7 @@ builder.Services.AddTransient<ProblemDetailsHandler>();
 
 var app = builder.Build();
 app.UseHttpLogging();
+app.UseResponseCompression();
 
 var jsonOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
 
