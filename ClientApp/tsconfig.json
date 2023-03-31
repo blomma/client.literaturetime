@@ -1,32 +1,25 @@
 {
     "compilerOptions": {
-        /* Language and Environment */
         "target": "es2016",
         "jsx": "react-jsx",
         "lib": ["dom", "dom.iterable", "esnext"],
 
-        /* Modules */
         "module": "esnext",
         "moduleResolution": "nodenext",
         "resolveJsonModule": true,
 
-        /* JavaScript Support */
         "allowJs": true,
 
-        /* Emit */
         "noEmit": true,
 
-        /* Interop Constraints */
         "esModuleInterop": true,
         "isolatedModules": true,
         "allowSyntheticDefaultImports": true,
         "forceConsistentCasingInFileNames": true,
 
-        /* Type Checking */
         "strict": true,
         "noFallthroughCasesInSwitch": true,
 
-        /* Completeness */
         "skipLibCheck": true
     },
     "include": ["src"]
