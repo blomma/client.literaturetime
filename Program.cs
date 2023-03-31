@@ -1,5 +1,5 @@
+using Client.LiteratureTime.Exceptions;
 using Client.LiteratureTime.Handlers;
-using Client.LiteratureTime.Middlewares;
 using Client.LiteratureTime.Models;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc;
@@ -41,7 +41,7 @@ builder.Services
     .AddHttpMessageHandler<ProblemDetailsHandler>();
 
 builder.Services.AddMvcCore();
-builder.Services.AddManagedResponseException();
+
 builder.Services.AddHttpLogging(logging =>
 {
     logging.RequestHeaders.Add("Referer");
@@ -93,7 +93,20 @@ app.MapGet(
             return Results.Ok(literaturetime);
         }
     )
-    .WithName("GetLiteratureTime");
+    .WithName("GetLiteratureTime")
+    .AddEndpointFilter(
+        async (invocationContext, next) =>
+        {
+            try
+            {
+                return await next(invocationContext);
+            }
+            catch (ManagedresponseException ex)
+            {
+                return Results.Problem(ex.ProblemDetails);
+            }
+        }
+    );
 
 app.UseStaticFiles(
     new StaticFileOptions
@@ -122,7 +135,5 @@ app.MapFallbackToFile(
         }
     }
 );
-
-app.UseManagedResponseException();
 
 app.Run();
