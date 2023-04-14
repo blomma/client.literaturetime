@@ -1,5 +1,4 @@
-import { CSSProperties, Fragment, useEffect } from "react";
-import { CircleLoader } from "react-spinners";
+import { Fragment, useEffect } from "react";
 import { Status } from "./Models/State";
 import {
     useLiteratureTimeApi,
@@ -21,11 +20,6 @@ export const LiteratureTime = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const override: CSSProperties = {
-        display: "block",
-        margin: "150px auto",
-    };
-
     if (state.status === Status.Error)
         return (
             <>
@@ -46,11 +40,8 @@ export const LiteratureTime = () => {
             </>
         );
 
-    if (state.status === Status.Loading)
-        return <CircleLoader size={150} cssOverride={override} />;
-
-    if (state.status === Status.Pending)
-        return <CircleLoader size={150} cssOverride={override} />;
+    if (state.status === Status.Loading) return <></>;
+    if (state.status === Status.Pending) return <></>;
 
     const quoteFragments = (quote: string) => {
         return quote.split("\n").map((value, index, array) => {
