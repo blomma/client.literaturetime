@@ -1,0 +1,41 @@
+.styledQuoteContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.styledCiteContainer {
+    display: flex;
+    justify-content: center;
+}
+
+blockquote {
+    font-size: 3vw;
+    width: 70vw;
+}
+
+em {
+    font-weight: 900;
+    font-style: normal;
+    color: rgb(231, 111, 81);
+}
+
+cite {
+    width: 60vw;
+    font-size: 1.5vw;
+    display: flex;
+    justify-content: flex-end;
+}
+
+cite .book {
+    font-style: normal;
+}
+
+cite .book::before {
+    content: " ";
+    white-space: pre;
+}
+
+cite .author::before {
+    content: " ";
+    white-space: pre;
+}
