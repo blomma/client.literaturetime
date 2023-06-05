@@ -6,17 +6,17 @@ ENV ASPNETCORE_URLS=http://+:80
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0-jammy AS build
 WORKDIR /src
-ENV NODE_VERSION=18.15.0
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash
+ENV NODE_VERSION=18.16.0
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 ENV NVM_DIR=/root/.nvm
 RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
 RUN . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
 RUN . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
+RUN . "$NVM_DIR/nvm.sh" && corepack enable
 ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
 COPY ["client.literaturetime.csproj", "./"]
 RUN dotnet restore "client.literaturetime.csproj"
 COPY . .
-WORKDIR "/src/."
 RUN dotnet build "client.literaturetime.csproj" -c Release -o /app/build
 
 FROM build AS publish
