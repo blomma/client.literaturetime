@@ -66,7 +66,7 @@ app.UseResponseCompression();
 var jsonOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
 
 app.MapGet(
-        "/literaturetime/{hour}/{minute}/{hash?}",
+        "/api/literature/{hour}/{minute}/{hash?}",
         async (
             CancellationToken cancellationToken,
             [FromServices] HttpClient httpClient,

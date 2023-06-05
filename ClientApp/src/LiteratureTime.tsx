@@ -12,9 +12,9 @@ export const LiteratureTime = () => {
     const { getLiteratureTime } = useLiteratureTimeApi();
 
     useEffect(() => {
-        var date = new Date();
-        let hour = `${date.getHours()}`.padStart(2, "0");
-        let minute = `${date.getMinutes()}`.padStart(2, "0");
+        const date = new Date();
+        const hour = `${date.getHours()}`.padStart(2, "0");
+        const minute = `${date.getMinutes()}`.padStart(2, "0");
 
         getLiteratureTime(hour, minute);
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -45,7 +45,7 @@ export const LiteratureTime = () => {
 
     const quoteFragments = (quote: string) => {
         return quote.split("\n").map((value, index, array) => {
-            var renderBreak =
+            const renderBreak =
                 array.length - 1 !== index || quote.endsWith("\n");
 
             return renderBreak ? (

@@ -37,10 +37,10 @@ export const LiteratureTimeProvider = ({
                 },
             };
 
-            var requestUrl =
+            const requestUrl =
                 hash !== undefined
-                    ? `/literaturetime/${hour}/${minute}/${hash}`
-                    : `/literaturetime/${hour}/${minute}`;
+                    ? `/api/literature/${hour}/${minute}/${hash}`
+                    : `/api/literature/${hour}/${minute}`;
 
             const response = await fetch(requestUrl, request);
             if (!response.ok) {
@@ -82,8 +82,10 @@ export const LiteratureTimeProvider = ({
     );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useLiteratureTimeState = () =>
     useContext<State>(LiteratureTimeStateContext);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useLiteratureTimeApi = () =>
     useContext<Api>(LiteratureTimeApiContext);
