@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.HttpLogging;
 using Serilog;
 using Serilog.Events;
+using System.Net;
 using System.Text.Json;
+using System.Threading.RateLimiting;
 
 Log.Logger = new LoggerConfiguration().MinimumLevel
     .Override("Microsoft", LogEventLevel.Warning)
@@ -10,6 +12,32 @@ Log.Logger = new LoggerConfiguration().MinimumLevel
     .CreateBootstrapLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, IPAddress>(context =>
+    {
+        IPAddress? remoteIpAddress = context.Connection.RemoteIpAddress;
+        if (IPAddress.IsLoopback(remoteIpAddress!))
+        {
+            return RateLimitPartition.GetNoLimiter(IPAddress.Loopback);
+        }
+
+        return RateLimitPartition.GetTokenBucketLimiter(
+            remoteIpAddress!,
+            _ =>
+                new TokenBucketRateLimiterOptions
+                {
+                    TokenLimit = 30,
+                    QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                    QueueLimit = 2,
+                    ReplenishmentPeriod = TimeSpan.FromSeconds(1),
+                    TokensPerPeriod = 20,
+                    AutoReplenishment = true
+                }
+        );
+    });
+});
 
 builder.Services.AddHttpForwarder();
 
@@ -49,6 +77,8 @@ app.MapForwarder(
     "/api/literature/{hour}/{minute}",
     builder.Configuration.GetConnectionString("api.literaturetime")!
 );
+
+app.UseRateLimiter();
 
 app.UseStaticFiles(
     new StaticFileOptions
