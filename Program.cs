@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.HttpLogging;
 using Serilog;
 using Serilog.Events;
 using System.Net;
-using System.Text.Json;
 using System.Threading.RateLimiting;
 
 Log.Logger = new LoggerConfiguration().MinimumLevel
@@ -70,8 +69,6 @@ builder.Services.AddHttpLogging(logging =>
 var app = builder.Build();
 app.UseHttpLogging();
 app.UseResponseCompression();
-
-var jsonOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
 
 app.MapForwarder(
     "/api/literature/{hour}/{minute}",
