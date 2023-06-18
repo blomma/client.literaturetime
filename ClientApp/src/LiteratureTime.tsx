@@ -7,6 +7,21 @@ import {
 
 import "./LiteratureTime.css";
 
+const quoteFragments = (quote: string) => {
+    return quote.split("\n").map((value, index, array) => {
+        const renderBreak = array.length - 1 !== index || quote.endsWith("\n");
+
+        return renderBreak ? (
+            <Fragment key={index}>
+                {value}
+                <br />
+            </Fragment>
+        ) : (
+            <Fragment key={index}>{value}</Fragment>
+        );
+    });
+};
+
 export const LiteratureTime = () => {
     const state = useLiteratureTimeState();
     const { getLiteratureTime } = useLiteratureTimeApi();
@@ -40,24 +55,8 @@ export const LiteratureTime = () => {
             </>
         );
 
-    if (state.status === Status.Loading) return <></>;
-    if (state.status === Status.Pending) return <></>;
-
-    const quoteFragments = (quote: string) => {
-        return quote.split("\n").map((value, index, array) => {
-            const renderBreak =
-                array.length - 1 !== index || quote.endsWith("\n");
-
-            return renderBreak ? (
-                <Fragment key={index}>
-                    {value}
-                    <br />
-                </Fragment>
-            ) : (
-                <Fragment key={index}>{value}</Fragment>
-            );
-        });
-    };
+    if (state.status === Status.Loading || state.status === Status.Pending)
+        return <></>;
 
     return (
         <>
