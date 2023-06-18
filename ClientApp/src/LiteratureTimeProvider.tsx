@@ -1,4 +1,4 @@
-import React, { ReactNode, useContext, useMemo, useReducer } from "react";
+import React, { ReactNode, useContext, useReducer } from "react";
 import {
     ActionType,
     defaultStateValue,
@@ -24,57 +24,53 @@ export const LiteratureTimeProvider = ({
 }) => {
     const [state, dispatch] = useReducer(reducer, defaultStateValue);
 
-    const api = useMemo(() => {
-        const getLiteratureTime = async (
-            hour: string,
-            minute: string,
-            hash?: string
-        ) => {
-            const request: RequestInit = {
-                method: "GET",
-                headers: {
-                    Accept: "application/json",
-                },
-            };
-
-            const requestUrl =
-                hash !== undefined
-                    ? `/api/literature/${hour}/${minute}/${hash}`
-                    : `/api/literature/${hour}/${minute}`;
-
-            const response = await fetch(requestUrl, request);
-            if (!response.ok) {
-                await response.json().then((data: ProblemDetails) => {
-                    dispatch({
-                        type: ActionType.onFetchLiteratureTimeError,
-                        data: Error(data.detail),
-                    });
-                });
-
-                return;
-            }
-
-            await response
-                .json()
-                .then((data: LiteratureTimeResult) => {
-                    dispatch({
-                        type: ActionType.onFetchLiteratureTimeSuccess,
-                        data: data,
-                    });
-                })
-                .catch((err: Error) => {
-                    dispatch({
-                        type: ActionType.onFetchLiteratureTimeError,
-                        data: err,
-                    });
-                });
+    const getLiteratureTime = async (
+        hour: string,
+        minute: string,
+        hash?: string
+    ) => {
+        const request: RequestInit = {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+            },
         };
 
-        return { getLiteratureTime };
-    }, []);
+        const requestUrl =
+            hash !== undefined
+                ? `/api/literature/${hour}/${minute}/${hash}`
+                : `/api/literature/${hour}/${minute}`;
+
+        const response = await fetch(requestUrl, request);
+        if (!response.ok) {
+            await response.json().then((data: ProblemDetails) => {
+                dispatch({
+                    type: ActionType.onFetchLiteratureTimeError,
+                    data: Error(data.detail),
+                });
+            });
+
+            return;
+        }
+
+        await response
+            .json()
+            .then((data: LiteratureTimeResult) => {
+                dispatch({
+                    type: ActionType.onFetchLiteratureTimeSuccess,
+                    data: data,
+                });
+            })
+            .catch((err: Error) => {
+                dispatch({
+                    type: ActionType.onFetchLiteratureTimeError,
+                    data: err,
+                });
+            });
+    };
 
     return (
-        <LiteratureTimeApiContext.Provider value={api}>
+        <LiteratureTimeApiContext.Provider value={{ getLiteratureTime }}>
             <LiteratureTimeStateContext.Provider value={state}>
                 {children}
             </LiteratureTimeStateContext.Provider>
