@@ -14,10 +14,7 @@ RUN . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
 RUN . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
 RUN . "$NVM_DIR/nvm.sh" && corepack enable
 ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
-COPY ["client.literaturetime.csproj", "./"]
-RUN dotnet restore "client.literaturetime.csproj"
 COPY . .
-RUN dotnet build "client.literaturetime.csproj" -c Release -o /app/build
 
 FROM build AS publish
 ARG VITE_GIT_VERSION
