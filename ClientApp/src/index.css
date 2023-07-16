@@ -3,7 +3,7 @@
 body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    color: dimgrey;
+    color: rgb(105, 105, 105);
     font-family: "Merriweather", Times, serif;
     background-color: rgb(254, 252, 243);
 }
