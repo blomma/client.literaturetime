@@ -16,3 +16,9 @@ updates:
       directory: "/ClientApp"
       schedule:
           interval: "weekly"
+
+    # Maintain dependencies for nuget
+    - package-ecosystem: "nuget"
+      directory: "/"
+      schedule:
+          interval: "weekly"
