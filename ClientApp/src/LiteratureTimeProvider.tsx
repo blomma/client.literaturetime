@@ -27,7 +27,7 @@ export const LiteratureTimeProvider = ({
     const getLiteratureTime = async (
         hour: string,
         minute: string,
-        hash?: string
+        hash?: string,
     ) => {
         const request: RequestInit = {
             method: "GET",
