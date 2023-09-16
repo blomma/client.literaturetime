@@ -8,7 +8,7 @@ export const Footer = () => {
             <footer>
                 <a
                     href="https://github.com/blomma/client.literaturetime"
-                    aria-label="code at github"
+                    aria-label="Project at github"
                 >
                     <SiGithub title="github" />
                 </a>
