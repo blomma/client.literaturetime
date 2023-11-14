@@ -1,10 +1,10 @@
-FROM mcr.microsoft.com/dotnet/aspnet:7.0-alpine-arm64v8 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine-arm64v8 AS base
 WORKDIR /app
 EXPOSE 80
 
 ENV ASPNETCORE_URLS=http://+:80
 
-FROM mcr.microsoft.com/dotnet/sdk:7.0-jammy AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS build
 WORKDIR /src
 ENV NODE_VERSION=18.16.1
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
