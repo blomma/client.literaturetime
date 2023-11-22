@@ -1,70 +1,81 @@
+using System.Net;
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.HttpLogging;
 using Serilog;
 using Serilog.Events;
-using System.Net;
-using System.Threading.RateLimiting;
 
-Log.Logger = new LoggerConfiguration().MinimumLevel
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel
     .Override("Microsoft", LogEventLevel.Warning)
-    .Enrich.FromLogContext()
-    .WriteTo.Console()
+    .Enrich
+    .FromLogContext()
+    .WriteTo
+    .Console()
     .CreateBootstrapLogger();
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddRateLimiter(options =>
-{
-    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, IPAddress>(context =>
+builder
+    .Services
+    .AddRateLimiter(options =>
     {
-        IPAddress? remoteIpAddress = context.Connection.RemoteIpAddress;
-        if (IPAddress.IsLoopback(remoteIpAddress!))
+        options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, IPAddress>(context =>
         {
-            return RateLimitPartition.GetNoLimiter(IPAddress.Loopback);
-        }
+            IPAddress? remoteIpAddress = context.Connection.RemoteIpAddress;
+            if (IPAddress.IsLoopback(remoteIpAddress!))
+            {
+                return RateLimitPartition.GetNoLimiter(IPAddress.Loopback);
+            }
 
-        return RateLimitPartition.GetTokenBucketLimiter(
-            remoteIpAddress!,
-            _ =>
-                new TokenBucketRateLimiterOptions
-                {
-                    TokenLimit = 30,
-                    QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-                    QueueLimit = 2,
-                    ReplenishmentPeriod = TimeSpan.FromSeconds(1),
-                    TokensPerPeriod = 20,
-                    AutoReplenishment = true
-                }
-        );
+            return RateLimitPartition.GetTokenBucketLimiter(
+                remoteIpAddress!,
+                _ =>
+                    new TokenBucketRateLimiterOptions
+                    {
+                        TokenLimit = 30,
+                        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                        QueueLimit = 2,
+                        ReplenishmentPeriod = TimeSpan.FromSeconds(1),
+                        TokensPerPeriod = 20,
+                        AutoReplenishment = true
+                    }
+            );
+        });
     });
-});
 
 builder.Services.AddHttpForwarder();
 
-builder.Services.AddResponseCompression(options =>
-{
-    options.EnableForHttps = true;
-    options.MimeTypes = new[] { "application/javascript", "text/css", "text/javascript" };
-});
+builder
+    .Services
+    .AddResponseCompression(options =>
+    {
+        options.EnableForHttps = true;
+        options.MimeTypes = new[] { "application/javascript", "text/css", "text/javascript" };
+    });
 
-builder.Host.UseSerilog(
-    (context, services, configuration) =>
-        configuration.ReadFrom.Configuration(context.Configuration).ReadFrom.Services(services)
-);
+builder
+    .Host
+    .UseSerilog(
+        (context, services, configuration) =>
+            configuration.ReadFrom.Configuration(context.Configuration).ReadFrom.Services(services)
+    );
 
-builder.Services.AddHttpLogging(logging =>
-{
-    logging.RequestHeaders.Add("Referer");
-    logging.RequestHeaders.Add("X-Forwarded-For");
-    logging.RequestHeaders.Add("X-Forwarded-Host");
-    logging.RequestHeaders.Add("X-Forwarded-Port");
-    logging.RequestHeaders.Add("X-Forwarded-Proto");
-    logging.RequestHeaders.Add("X-Forwarded-Server");
-    logging.RequestHeaders.Add("X-Real-Ip");
-    logging.RequestHeaders.Add("Upgrade-Insecure-Requests");
-    logging.LoggingFields = HttpLoggingFields.All;
-    logging.RequestBodyLogLimit = 4096;
-    logging.ResponseBodyLogLimit = 4096;
-});
+builder
+    .Services
+    .AddHttpLogging(logging =>
+    {
+        logging.RequestHeaders.Add("Referer");
+        logging.RequestHeaders.Add("X-Forwarded-For");
+        logging.RequestHeaders.Add("X-Forwarded-Host");
+        logging.RequestHeaders.Add("X-Forwarded-Port");
+        logging.RequestHeaders.Add("X-Forwarded-Proto");
+        logging.RequestHeaders.Add("X-Forwarded-Server");
+        logging.RequestHeaders.Add("X-Real-Ip");
+        logging.RequestHeaders.Add("Upgrade-Insecure-Requests");
+        logging.LoggingFields = HttpLoggingFields.All;
+        logging.RequestBodyLogLimit = 4096;
+        logging.ResponseBodyLogLimit = 4096;
+    });
 
 var app = builder.Build();
 app.UseHttpLogging();
