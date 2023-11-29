@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Net;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.HttpLogging;
@@ -10,7 +11,11 @@ Log.Logger = new LoggerConfiguration()
     .Enrich
     .FromLogContext()
     .WriteTo
-    .Console()
+    .Console(
+        LogEventLevel.Verbose,
+        "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}",
+        CultureInfo.CurrentCulture
+    )
     .CreateBootstrapLogger();
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,7 +55,12 @@ builder
     .AddResponseCompression(options =>
     {
         options.EnableForHttps = true;
-        options.MimeTypes = new[] { "application/javascript", "text/css", "text/javascript" };
+        options.MimeTypes = new List<string>()
+        {
+            "application/javascript",
+            "text/css",
+            "text/javascript"
+        };
     });
 
 builder

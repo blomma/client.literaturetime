@@ -12,6 +12,8 @@
         <SpaProxyLaunchCommand>yarn dev</SpaProxyLaunchCommand>
         <ImplicitUsings>enable</ImplicitUsings>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <AnalysisLevel>latest-Recommended</AnalysisLevel>
+        <AnalysisLevelPerformance>All</AnalysisLevelPerformance>
     </PropertyGroup>
 
     <ItemGroup>
