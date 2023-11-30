@@ -13,7 +13,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <AnalysisLevel>latest-Recommended</AnalysisLevel>
-        <AnalysisLevelPerformance>All</AnalysisLevelPerformance>
+        <AnalysisLevelPerformance>latest-All</AnalysisLevelPerformance>
     </PropertyGroup>
 
     <ItemGroup>
