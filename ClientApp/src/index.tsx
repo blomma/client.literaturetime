@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { Footer } from "./Footer";
 import { App } from "./App";
+import { Footer } from "./Footer";
 
 import "./index.css";
 

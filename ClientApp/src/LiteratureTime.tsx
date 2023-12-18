@@ -1,9 +1,9 @@
 import { Fragment, useEffect } from "react";
-import { Status } from "./Models/State";
 import {
     useLiteratureTimeApi,
     useLiteratureTimeState,
 } from "./LiteratureTimeProvider";
+import { Status } from "./Models/State";
 
 import "./LiteratureTime.css";
 

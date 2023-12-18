@@ -1,9 +1,9 @@
 import React, { ReactNode, useContext, useReducer } from "react";
 import {
     ActionType,
+    State,
     defaultStateValue,
     reducer,
-    State,
 } from "./LiteratureTimeState";
 import { LiteratureTimeResult } from "./Models/LiteratureTimeResult";
 import { ProblemDetails } from "./Models/ProblemDetails";
