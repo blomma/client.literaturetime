@@ -69,8 +69,15 @@ export const LiteratureTime = () => {
             </div>
             <div className="styledCiteContainer">
                 <cite>
-                    -<span className="book">{state.data.title}</span>,
-                    <span className="author">{state.data.author}</span>
+                    -
+                    <span className="book">
+                        <a
+                            href={`https://www.gutenberg.org/ebooks/${state.data.gutenbergReference}`}
+                        >
+                            {state.data.title}
+                        </a>
+                    </span>
+                    ,<span className="author">{state.data.author}</span>
                 </cite>
             </div>
         </>

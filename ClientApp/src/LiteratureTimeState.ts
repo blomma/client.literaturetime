@@ -40,6 +40,8 @@ export const reducer = (state: State, action: Actions): State => {
                     quoteFirst: action.data.quoteFirst,
                     quoteTime: action.data.quoteTime,
                     quoteLast: action.data.quoteLast,
+                    gutenbergReference: action.data.gutenbergReference,
+                    hash: action.data.hash,
                 },
             };
 

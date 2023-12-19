@@ -39,3 +39,8 @@ cite .author::before {
     content: " ";
     white-space: pre;
 }
+
+cite .book a {
+    color: inherit;
+    text-decoration: none;
+}

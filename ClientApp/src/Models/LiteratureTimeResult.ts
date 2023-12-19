@@ -5,4 +5,6 @@ export interface LiteratureTimeResult {
     quoteLast: string;
     title: string;
     author: string;
+    gutenbergReference: string;
+    hash: string;
 }
