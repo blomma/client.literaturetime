@@ -424,10 +424,10 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-2.0.1.tgz#e5211452df060fa8522b55c7b3c0c4d1981cb044"
   integrity sha512-dvuCeX5fC9dXgJn9t+X5atfmgQAzUOWqS1254Gh0m6i8wKd10ebXkfNKiRK+1GWi/yTvvLDHpoxLr0xxxeslWw==
 
-"@icons-pack/react-simple-icons@^9.2.0":
-  version "9.2.0"
-  resolved "https://registry.yarnpkg.com/@icons-pack/react-simple-icons/-/react-simple-icons-9.2.0.tgz#e6813893e17c47a339cec5f126cd09254e8314c8"
-  integrity sha512-09JZZx/jM4ugzwcUw4OSS1l6/83x2sJzG6jwzHpNmPufY1rq7apLdcK+4Cy9nebAuZEwaeVZQ69c8uib736LeA==
+"@icons-pack/react-simple-icons@^9.3.0":
+  version "9.3.0"
+  resolved "https://registry.yarnpkg.com/@icons-pack/react-simple-icons/-/react-simple-icons-9.3.0.tgz#a3901d7eb0f2f4109d8f2c584f537cea056aa238"
+  integrity sha512-e2VRDFrhI9rCkEdkuAUhf/Ool0cwusWnwKqMACbIRMLHXxnHp1SdnGlRaEEjDeF4R0pQaEkmVNs2x2vn1sl+7A==
 
 "@jridgewell/gen-mapping@^0.3.0", "@jridgewell/gen-mapping@^0.3.2":
   version "0.3.3"
