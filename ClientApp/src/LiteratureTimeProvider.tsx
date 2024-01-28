@@ -24,11 +24,7 @@ export const LiteratureTimeProvider = ({
 }) => {
     const [state, dispatch] = useReducer(reducer, defaultStateValue);
 
-    const getLiteratureTime = async (
-        hour: string,
-        minute: string,
-        hash?: string,
-    ) => {
+    const getLiteratureTime = async (hour: string, minute: string) => {
         const request: RequestInit = {
             method: "GET",
             headers: {
@@ -36,10 +32,7 @@ export const LiteratureTimeProvider = ({
             },
         };
 
-        const requestUrl =
-            hash !== undefined
-                ? `/api/literature/${hour}/${minute}/${hash}`
-                : `/api/literature/${hour}/${minute}`;
+        const requestUrl = `/api/literature/${hour}/${minute}`;
 
         const response = await fetch(requestUrl, request);
         if (!response.ok) {
