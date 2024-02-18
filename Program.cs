@@ -1,9 +1,13 @@
 using System.Globalization;
 using System.Net;
+using System.Text.Json;
 using System.Threading.RateLimiting;
+using Client.LiteratureTime.Models;
 using Microsoft.AspNetCore.HttpLogging;
+using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using Serilog.Events;
+using StackExchange.Redis;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
@@ -29,36 +33,32 @@ builder.Services.AddRateLimiter(options =>
 
         return RateLimitPartition.GetTokenBucketLimiter(
             remoteIpAddress!,
-            _ =>
-                new TokenBucketRateLimiterOptions
-                {
-                    TokenLimit = 30,
-                    QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-                    QueueLimit = 2,
-                    ReplenishmentPeriod = TimeSpan.FromSeconds(1),
-                    TokensPerPeriod = 20,
-                    AutoReplenishment = true
-                }
+            _ => new TokenBucketRateLimiterOptions
+            {
+                TokenLimit = 30,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 2,
+                ReplenishmentPeriod = TimeSpan.FromSeconds(1),
+                TokensPerPeriod = 20,
+                AutoReplenishment = true
+            }
         );
     });
 });
 
-builder.Services.AddHttpForwarder();
-
 builder.Services.AddResponseCompression(options =>
 {
     options.EnableForHttps = true;
-    options.MimeTypes = new List<string>()
-    {
-        "application/javascript",
-        "text/css",
-        "text/javascript"
-    };
+    options.MimeTypes = ["application/javascript", "text/css", "text/javascript"];
 });
 
 builder.Host.UseSerilog(
     (context, services, configuration) =>
         configuration.ReadFrom.Configuration(context.Configuration).ReadFrom.Services(services)
+);
+
+builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
+    ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("redis")!)
 );
 
 builder.Services.AddHttpLogging(logging =>
@@ -80,10 +80,37 @@ var app = builder.Build();
 app.UseHttpLogging();
 app.UseResponseCompression();
 
-app.MapForwarder(
-    "/api/literature/{hour}/{minute}",
-    builder.Configuration.GetConnectionString("api.literaturetime")!
+app.UseStatusCodePages(async statusCodeContext =>
+    await Results
+        .Problem(statusCode: statusCodeContext.HttpContext.Response.StatusCode)
+        .ExecuteAsync(statusCodeContext.HttpContext)
 );
+
+var group = app.MapGroup("/api/literature");
+group
+    .MapGet(
+        "/{hour}/{minute}",
+        async (
+            [FromServices] IConnectionMultiplexer connectionMultiplexer,
+            [AsParameters] LiteratureRequest request
+        ) =>
+        {
+            var literatureTimeKey = $"literature:time:{request.Hour}:{request.Minute}";
+
+            var db = connectionMultiplexer.GetDatabase();
+            var data = await db.SetRandomMemberAsync(literatureTimeKey);
+
+            if (data.IsNull)
+            {
+                return Results.NotFound();
+            }
+
+            var result = JsonSerializer.Deserialize<LiteratureTime>(data.ToString());
+
+            return Results.Ok(result);
+        }
+    )
+    .WithName("GetLiteratureTime");
 
 app.UseRateLimiter();
 

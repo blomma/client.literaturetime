@@ -2,7 +2,7 @@
 
 Clock using time quotes from gutenberg project
 
-This is the frontend for [literature.artsoftheinsane.com](https://literature.artsoftheinsane.com) being feed by a backend api [api.literaturetime](https://github.com/blomma/api.literaturetime)
+This is the frontend for [literature.artsoftheinsane.com](https://literature.artsoftheinsane.com)
 
 The kubernetes definition files can be found in the repo [kubernetes.literaturetime](https://github.com/blomma/kubernetes.literaturetime)
 
