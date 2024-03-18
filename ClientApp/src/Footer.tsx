@@ -1,4 +1,4 @@
-import { SiGithub } from "@icons-pack/react-simple-icons";
+import Github from "./github.svg?react";
 
 import "./Footer.css";
 
@@ -10,7 +10,12 @@ export const Footer = () => {
                     href="https://github.com/blomma/client.literaturetime"
                     aria-label="Project at github"
                 >
-                    <SiGithub title="github" />
+                    <Github
+                        title="github"
+                        fill="currentColor"
+                        width={24}
+                        height={24}
+                    />
                 </a>
             </footer>
         </div>
