@@ -22,13 +22,13 @@ jobs:
                   fetch-depth: 0
 
             - name: Install GitVersion
-              uses: gittools/actions/gitversion/setup@v0.13.5
+              uses: gittools/actions/gitversion/setup@v1.1.1
               with:
                   versionSpec: "5.x"
 
             - name: Determine Version
               id: gitversion
-              uses: gittools/actions/gitversion/execute@v0.13.5
+              uses: gittools/actions/gitversion/execute@v1.1.1
 
             - name: Log in to the Container registry
               uses: docker/login-action@v3.1.0
