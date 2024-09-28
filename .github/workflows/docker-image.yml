@@ -19,7 +19,9 @@ jobs:
             - name: Checkout repository
               uses: actions/checkout@v4
               with:
+                  submodules: recursive
                   fetch-depth: 0
+                  token: ${{ secrets.GH_PRIVATE_REPO }}
 
             - name: Install GitVersion
               uses: gittools/actions/gitversion/setup@v3.0.0
