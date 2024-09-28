@@ -2,7 +2,6 @@ using System.Globalization;
 using System.Net;
 using System.Threading.RateLimiting;
 using Client.LiteratureTime.Models;
-// using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Serilog;
@@ -56,27 +55,11 @@ builder.Host.UseSerilog(
         configuration.ReadFrom.Configuration(context.Configuration).ReadFrom.Services(services)
 );
 
-// builder.Services.AddHttpLogging(logging =>
-// {
-//     logging.RequestHeaders.Add("Referer");
-//     logging.RequestHeaders.Add("X-Forwarded-For");
-//     logging.RequestHeaders.Add("X-Forwarded-Host");
-//     logging.RequestHeaders.Add("X-Forwarded-Port");
-//     logging.RequestHeaders.Add("X-Forwarded-Proto");
-//     logging.RequestHeaders.Add("X-Forwarded-Server");
-//     logging.RequestHeaders.Add("X-Real-Ip");
-//     logging.RequestHeaders.Add("Upgrade-Insecure-Requests");
-//     logging.LoggingFields = HttpLoggingFields.All;
-//     logging.RequestBodyLogLimit = 4096;
-//     logging.ResponseBodyLogLimit = 4096;
-// });
-
 builder.Services.AddMemoryCache();
 builder.Services.AddHostedService<Client.LiteratureTime.LiteratureDataWorker>();
 
 var app = builder.Build();
 
-// app.UseHttpLogging();
 app.UseResponseCompression();
 
 app.UseStatusCodePages(async statusCodeContext =>
