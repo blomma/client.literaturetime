@@ -1,9 +1,10 @@
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using Microsoft.Extensions.Caching.Memory;
 
-namespace Client.LiteratureTime.Workers;
+namespace Client.LiteratureTime;
 
-public class LiteratureDataWorker() : BackgroundService
+public class LiteratureDataWorker(IMemoryCache memoryCache) : BackgroundService
 {
     private static string PrefixKey(string key) => $"literature:time:{key}";
 
@@ -46,6 +47,11 @@ public class LiteratureDataWorker() : BackgroundService
         {
             var literatureTimes = ImportLiteratureTimes();
             var groupedLiteratureTimes = literatureTimes.GroupBy(l => l.Time);
+
+            foreach (var item in groupedLiteratureTimes)
+            {
+                memoryCache.Set<List<Models.LiteratureTime>>(item.Key, [.. item]);
+            }
         }
         catch (OperationCanceledException)
         {

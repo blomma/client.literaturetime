@@ -1,13 +1,12 @@
 using System.Globalization;
 using System.Net;
-using System.Text.Json;
 using System.Threading.RateLimiting;
 using Client.LiteratureTime.Models;
-using Microsoft.AspNetCore.HttpLogging;
+// using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Serilog;
 using Serilog.Events;
-using StackExchange.Redis;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
@@ -40,7 +39,7 @@ builder.Services.AddRateLimiter(options =>
                 QueueLimit = 2,
                 ReplenishmentPeriod = TimeSpan.FromSeconds(1),
                 TokensPerPeriod = 20,
-                AutoReplenishment = true
+                AutoReplenishment = true,
             }
         );
     });
@@ -57,27 +56,27 @@ builder.Host.UseSerilog(
         configuration.ReadFrom.Configuration(context.Configuration).ReadFrom.Services(services)
 );
 
-builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
-    ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("redis")!)
-);
+// builder.Services.AddHttpLogging(logging =>
+// {
+//     logging.RequestHeaders.Add("Referer");
+//     logging.RequestHeaders.Add("X-Forwarded-For");
+//     logging.RequestHeaders.Add("X-Forwarded-Host");
+//     logging.RequestHeaders.Add("X-Forwarded-Port");
+//     logging.RequestHeaders.Add("X-Forwarded-Proto");
+//     logging.RequestHeaders.Add("X-Forwarded-Server");
+//     logging.RequestHeaders.Add("X-Real-Ip");
+//     logging.RequestHeaders.Add("Upgrade-Insecure-Requests");
+//     logging.LoggingFields = HttpLoggingFields.All;
+//     logging.RequestBodyLogLimit = 4096;
+//     logging.ResponseBodyLogLimit = 4096;
+// });
 
-builder.Services.AddHttpLogging(logging =>
-{
-    logging.RequestHeaders.Add("Referer");
-    logging.RequestHeaders.Add("X-Forwarded-For");
-    logging.RequestHeaders.Add("X-Forwarded-Host");
-    logging.RequestHeaders.Add("X-Forwarded-Port");
-    logging.RequestHeaders.Add("X-Forwarded-Proto");
-    logging.RequestHeaders.Add("X-Forwarded-Server");
-    logging.RequestHeaders.Add("X-Real-Ip");
-    logging.RequestHeaders.Add("Upgrade-Insecure-Requests");
-    logging.LoggingFields = HttpLoggingFields.All;
-    logging.RequestBodyLogLimit = 4096;
-    logging.ResponseBodyLogLimit = 4096;
-});
+builder.Services.AddMemoryCache();
+builder.Services.AddHostedService<Client.LiteratureTime.LiteratureDataWorker>();
 
 var app = builder.Build();
-app.UseHttpLogging();
+
+// app.UseHttpLogging();
 app.UseResponseCompression();
 
 app.UseStatusCodePages(async statusCodeContext =>
@@ -90,24 +89,30 @@ var group = app.MapGroup("/api/literature");
 group
     .MapGet(
         "/{hour}/{minute}",
-        async (
-            [FromServices] IConnectionMultiplexer connectionMultiplexer,
-            [AsParameters] LiteratureRequest request
-        ) =>
+        ([FromServices] IMemoryCache memoryCache, [AsParameters] LiteratureRequest request) =>
         {
-            var literatureTimeKey = $"literature:time:{request.Hour}:{request.Minute}";
+            var literatureTimeKey = $"{request.Hour}:{request.Minute}";
 
-            var db = connectionMultiplexer.GetDatabase();
-            var data = await db.SetRandomMemberAsync(literatureTimeKey);
+            var found = memoryCache.TryGetValue<List<Client.LiteratureTime.Models.LiteratureTime>>(
+                literatureTimeKey,
+                out var value
+            );
 
-            if (data.IsNull)
+            if (found && value is not null)
             {
-                return Results.NotFound();
+                var quotes = new ReadOnlySpan<Client.LiteratureTime.Models.LiteratureTime>(
+                    [.. value]
+                );
+
+                var result = Random.Shared.GetItems<Client.LiteratureTime.Models.LiteratureTime>(
+                    quotes,
+                    1
+                );
+
+                return Results.Ok(result.First());
             }
 
-            var result = JsonSerializer.Deserialize<LiteratureTime>(data.ToString());
-
-            return Results.Ok(result);
+            return Results.NotFound();
         }
     )
     .WithName("GetLiteratureTime");
@@ -127,7 +132,7 @@ app.UseStaticFiles(
                     : "no-cache";
 
             ctx.Context.Response.Headers.Append("Cache-Control", cacheControl);
-        }
+        },
     }
 );
 
@@ -138,7 +143,7 @@ app.MapFallbackToFile(
         OnPrepareResponse = ctx =>
         {
             ctx.Context.Response.Headers.Append("Cache-Control", "no-cache");
-        }
+        },
     }
 );
 
