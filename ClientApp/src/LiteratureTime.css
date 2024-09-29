@@ -26,21 +26,21 @@ cite {
     justify-content: flex-end;
 }
 
-cite .book {
+.book {
     font-style: normal;
 }
 
-cite .book::before {
+.book::before {
     content: " ";
     white-space: pre;
 }
 
-cite .author::before {
+.author::before {
     content: " ";
     white-space: pre;
 }
 
-cite .book a {
+cite a {
     color: inherit;
     text-decoration: none;
 }
