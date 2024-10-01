@@ -13,6 +13,20 @@ blockquote {
     width: 70vw;
 }
 
+@media (max-width: 991.98px) {
+    blockquote {
+        font-size: 3.5vw;
+        width: 70vw;
+    }
+}
+
+@media (max-width: 767.98px) {
+    blockquote {
+        font-size: 4vw;
+        width: 70vw;
+    }
+}
+
 em {
     font-weight: 900;
     font-style: normal;
@@ -21,9 +35,27 @@ em {
 
 cite {
     width: 60vw;
-    font-size: 1.5vw;
+    font-size: 2vw;
     display: flex;
     justify-content: flex-end;
+}
+
+@media (max-width: 991.98px) {
+    cite {
+        width: 60vw;
+        font-size: 2.5vw;
+        display: flex;
+        justify-content: flex-end;
+    }
+}
+
+@media (max-width: 767.98px) {
+    cite {
+        width: 60vw;
+        font-size: 3vw;
+        display: flex;
+        justify-content: flex-end;
+    }
 }
 
 .book {
