@@ -6,16 +6,14 @@ namespace Client.LiteratureTime;
 
 public class LiteratureDataWorker(IMemoryCache memoryCache) : BackgroundService
 {
-    private static string PrefixKey(string key) => $"literature:time:{key}";
-
-    private static readonly JsonSerializerOptions jsonSerializerOptions =
+    private static readonly JsonSerializerOptions JsonSerializerOptions =
         new()
         {
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
             PropertyNameCaseInsensitive = true,
         };
 
-    public IEnumerable<Models.LiteratureTime> ImportLiteratureTimes()
+    private static List<Models.LiteratureTime> ImportLiteratureTimes()
     {
         List<Models.LiteratureTime> literatureTimeImports = [];
         var files = Directory.EnumerateFiles(
@@ -29,7 +27,7 @@ public class LiteratureDataWorker(IMemoryCache memoryCache) : BackgroundService
             var content = File.ReadAllText(file);
             var result = JsonSerializer.Deserialize<List<Models.LiteratureTime>>(
                 content,
-                jsonSerializerOptions
+                JsonSerializerOptions
             );
 
             if (result != null)

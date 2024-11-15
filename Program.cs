@@ -76,26 +76,21 @@ group
         {
             var literatureTimeKey = $"{request.Hour}:{request.Minute}";
 
-            var found = memoryCache.TryGetValue<List<Client.LiteratureTime.Models.LiteratureTime>>(
+            var found = memoryCache.TryGetValue<List<LiteratureTime>>(
                 literatureTimeKey,
                 out var value
             );
 
-            if (found && value is not null)
+            if (!found || value is null)
             {
-                var quotes = new ReadOnlySpan<Client.LiteratureTime.Models.LiteratureTime>(
-                    [.. value]
-                );
-
-                var result = Random.Shared.GetItems<Client.LiteratureTime.Models.LiteratureTime>(
-                    quotes,
-                    1
-                );
-
-                return Results.Ok(result.First());
+                return Results.NotFound();
             }
 
-            return Results.NotFound();
+            var quotes = new ReadOnlySpan<LiteratureTime>([.. value]);
+
+            var result = Random.Shared.GetItems(quotes, 1);
+
+            return Results.Ok(result.First());
         }
     )
     .WithName("GetLiteratureTime");
