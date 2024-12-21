@@ -23,13 +23,13 @@ builder.Services.AddRateLimiter(options =>
 {
     options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, IPAddress>(context =>
     {
-        IPAddress? remoteIpAddress = context.Connection.RemoteIpAddress;
+        var remoteIpAddress = context.Connection.RemoteIpAddress;
         if (IPAddress.IsLoopback(remoteIpAddress!))
         {
             return RateLimitPartition.GetNoLimiter(IPAddress.Loopback);
         }
 
-        return RateLimitPartition.GetTokenBucketLimiter(
+        var limiter = RateLimitPartition.GetTokenBucketLimiter(
             remoteIpAddress!,
             _ => new TokenBucketRateLimiterOptions
             {
@@ -41,6 +41,8 @@ builder.Services.AddRateLimiter(options =>
                 AutoReplenishment = true,
             }
         );
+
+        return limiter;
     });
 });
 
