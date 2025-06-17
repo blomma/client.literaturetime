@@ -6,12 +6,11 @@ namespace Client.LiteratureTime;
 
 public class LiteratureDataWorker(IMemoryCache memoryCache) : BackgroundService
 {
-    private static readonly JsonSerializerOptions JsonSerializerOptions =
-        new()
-        {
-            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-            PropertyNameCaseInsensitive = true,
-        };
+    private static readonly JsonSerializerOptions JsonSerializerOptions = new()
+    {
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        PropertyNameCaseInsensitive = true,
+    };
 
     private static List<Models.LiteratureTime> ImportLiteratureTimes()
     {
